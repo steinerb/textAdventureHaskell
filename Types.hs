@@ -1,4 +1,5 @@
-module Types (test, Con, Name, Desc, ID, World, Location, Item) where 
+module Types where
+--version0.1 
 
 
 test :: String

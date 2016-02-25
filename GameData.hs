@@ -1,4 +1,6 @@
-module GameData (gameWorld, locations, connections, items, maybeItems) where
+module GameData where
+import Types
+--version0.1
 
 
 gameWorld :: World

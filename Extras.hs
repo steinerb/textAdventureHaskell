@@ -1,4 +1,5 @@
-module Extras (test, Con, Name, Desc, ID, World, Location, Item, Enemy, gameWorld, locations, connections, items, maybeItems) where 
+module Extras where 
+--version0.1
 
 
 test :: String

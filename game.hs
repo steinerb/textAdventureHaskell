@@ -1,4 +1,5 @@
-import Extras
+import Types
+import GameData
 --version0.1
 
 main :: IO ()

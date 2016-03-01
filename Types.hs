@@ -8,14 +8,14 @@ type Desc = String
 type ID = Int
 type Message = String
 
-data World = World {worldLocs :: [Location], worldCons :: [[Con]] } deriving (Show)
+data World = World {worldLocs :: [Location], worldCons :: [[Con]]} deriving (Show)
 data Location = Location {locID :: ID, locName :: Name, locDesc :: Desc, locItem :: Maybe Item, locEnemy :: Maybe Enemy} deriving (Show)
 data Item = Item {itemID :: ID, itemName :: Name} deriving (Eq, Show)
 data Enemy = Enemy {enemyName :: Name, isAlive :: Bool} deriving (Show)
 
 data Player = Player {playerName :: Name, playerLoc :: ID, inventory :: Maybe Item, stillAlive :: Bool} deriving (Show)
 
-data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message} deriving (Show)
+data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} deriving (Show)
 
 {-
 instance Show GameState where

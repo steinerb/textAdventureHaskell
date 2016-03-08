@@ -1,5 +1,5 @@
 module Types where
---version0.1 
+--version0.3
 
 
 type Con = Int
@@ -9,11 +9,11 @@ type ID = Int
 type Message = String
 
 data World = World {worldLocs :: [Location], worldCons :: [[Con]]} deriving (Show)
-data Location = Location {locID :: ID, locName :: Name, locDesc :: Desc, locItem :: Maybe Item, locEnemy :: Maybe Enemy} deriving (Show)
+data Location = Location {locID :: ID, locName :: Name, locDesc :: Desc, locItem :: [Item], locEnemy :: Maybe Enemy} deriving (Show)
 data Item = Item {itemID :: ID, itemName :: Name} deriving (Eq, Show)
 data Enemy = Enemy {enemyName :: Name, isAlive :: Bool} deriving (Show)
 
-data Player = Player {playerName :: Name, playerLoc :: ID, inventory :: Maybe Item, stillAlive :: Bool} deriving (Show)
+data Player = Player {playerName :: Name, playerLoc :: ID, inventory :: [Item], stillAlive :: Bool} deriving (Show)
 
 data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} deriving (Show)
 

@@ -1,7 +1,7 @@
 import Types
 import GameData
 import Functions
---version0.1
+--version0.3
 
 
 main :: IO ()
@@ -11,7 +11,7 @@ textAdventure :: IO ()
 textAdventure = do
 	intro 
 	name <- getName
-	gameLoop (GameState gameWorld (Player name 0 Nothing True) "You wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
+	gameLoop (GameState gameWorld (Player name 0 [] True) "You wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
 	--outro
 
 
@@ -57,34 +57,18 @@ updateState state "T" = do return (pickUp state)
 updateState state "t" = do return (pickUp state)
 updateState state "D" = do return (ditch state)
 updateState state "d" = do return (ditch state)
+--updateState state "M" = do return (move state)
+--updateState state "m" = do return (move state)
 updateState state "status" = do 
 	putStrLn (show state)
 	return state
 updateState state "help" = do
-	putStrLn ("Commands:\n--------------------------------------------------------------------------------")
-	putStrLn ("(Q)uit: Exit the game")
-	putStrLn ("(L)ook: Gives a description of your current location and a name of a nearby item")
-	putStrLn ("(T)ake: Pick up the item in your current location")
-	putStrLn ("(D)rop: Drop the item in your inventory to your current location")
-	putStrLn ("(S)tatus: Displays information about the current game state (for developers only)")
-	putStrLn ("(H)elp: Display this list of commands")
+	help
 	return state
 updateState state "H" = do
-	putStrLn ("Commands:\n--------------------------------------------------------------------------------")
-	putStrLn ("(Q)uit: Exit the game")
-	putStrLn ("(L)ook: Gives a description of your current location and a name of a nearby item")
-	putStrLn ("(T)ake: Pick up the item in your current location")
-	putStrLn ("(D)rop: Drop the item in your inventory to your current location")
-	putStrLn ("(S)tatus: Displays information about the current game state (for developers only)")
-	putStrLn ("(H)elp: Display this list of commands")
+	help
 	return state
 updateState state "h" = do
-	putStrLn ("Commands:\n--------------------------------------------------------------------------------")
-	putStrLn ("(Q)uit: Exit the game")
-	putStrLn ("(L)ook: Gives a description of your current location and a name of a nearby item")
-	putStrLn ("(T)ake: Pick up the item in your current location")
-	putStrLn ("(D)rop: Drop the item in your inventory to your current location")
-	putStrLn ("(S)tatus: Displays information about the current game state (for developers only)")
-	putStrLn ("(H)elp: Display this list of commands")
+	help
 	return state
 updateState state other = do return (invalid state)

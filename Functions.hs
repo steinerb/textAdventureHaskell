@@ -30,18 +30,18 @@ look (GameState world player message turns) =
 			("You look around and see a "++(locDesc ((worldLocs world)!!(playerLoc player)))) turns)
 	else
 		(GameState world player 
-			("You look around and see a "++(locDesc ((worldLocs world)!!(playerLoc player)))++"\n\tYou notice these items nearby: "++ (concat (map itemName (getItemByID world (playerLoc player)))) ) turns)
+			("You look around and see a "++(locDesc ((worldLocs world)!!(playerLoc player)))++"\n\tYou notice these items nearby: "++ (unwords (map itemName (getItemByID world (playerLoc player)))) ) turns)
 
 
 pickUp :: GameState -> GameState
-pickUp (GameState world player@(Player _ _ inv _) message turns) = 
+pickUp (GameState world player@(Player _ _ _ inv _) message turns) = 
 	if (getItemByID world (playerLoc player)) == []
 		then GameState world player "There is no item to pick up!" turns
 	else
 	(
 		GameState 
 			(World (locs (playerLoc player)) (worldCons world))
-			(Player (playerName player) (playerLoc player) (inv++(getItemByID world (playerLoc player))) True) 
+			(Player (playerName player) (playerGender player) (playerLoc player) (inv++(getItemByID world (playerLoc player))) True) 
 			("You pick up the item.")
 			(turns+1)
 	)
@@ -49,14 +49,14 @@ pickUp (GameState world player@(Player _ _ inv _) message turns) =
 		where loc = (worldLocs world)!!(playerLoc player)
 
 ditch :: GameState -> GameState
-ditch (GameState world player@(Player _ _ inv _) message turns) = 
+ditch (GameState world player@(Player _ _ _ inv _) message turns) = 
 	if (inventory player) == []
 		then GameState world player "You have nothing to drop!" turns
 	else
 	(
 		GameState
 			(World (locs (playerLoc player)) (worldCons world))
-			(Player (playerName player) (playerLoc player) (tail inv) True)
+			(Player (playerName player) (playerGender player) (playerLoc player) (tail inv) True)
 			("You drop the item you were holding.")
 			(turns+1)
 	)

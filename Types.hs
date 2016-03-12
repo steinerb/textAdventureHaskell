@@ -3,19 +3,39 @@ module Types where
 
 
 type Con = Int
-type Name = String
-type Desc = String
 type ID = Int
 type Message = String
 
 data World = World {worldLocs :: [Location], worldCons :: [[Con]]} deriving (Show)
-data Location = Location {locID :: ID, locName :: Name, locDesc :: Desc, locItem :: [Item], locEnemy :: Maybe Enemy} deriving (Show)
-data Item = Item {itemID :: ID, itemName :: Name} deriving (Eq, Show)
-data Enemy = Enemy {enemyName :: Name, isAlive :: Bool} deriving (Show)
+data Location = Location {locID :: ID, locName :: String, locDesc :: String, locItem :: [Item], locEnemy :: Maybe Enemy} deriving (Show)
+data Item = Item {itemID :: ID, itemName :: String, itemDesc :: String} deriving (Eq, Show)
+data Enemy = Enemy {enemyName :: String, isAlive :: Bool} deriving (Show)
 
-data Player = Player {playerName :: Name, playerLoc :: ID, inventory :: [Item], stillAlive :: Bool} deriving (Show)
+data Player = Player {playerName :: String, playerGender :: String, playerLoc :: ID, inventory :: [Item], stillAlive :: Bool} deriving (Show)
 
 data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} deriving (Show)
+
+
+
+class Desc a where
+	name :: a -> String
+	desc :: a -> String
+
+instance Desc Location where
+	name (Location _ n _ _ _) = n
+	desc (Location _ _ d _ _) = d
+
+instance Desc Item where
+	name (Item _ n _) = n
+	desc (Item _ _ d) = d
+
+instance Desc Player where
+	name (Player n _ _ _ _) = n
+	desc (Player n g _ i _) = "Name: "++n++"\nGender: "++g++"\nInventory: "++(unwords (map name i))
+
+--instance Desc World where
+
+
 
 {-
 instance Show GameState where

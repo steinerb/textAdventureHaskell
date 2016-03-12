@@ -11,7 +11,8 @@ textAdventure :: IO ()
 textAdventure = do
 	intro 
 	name <- getName
-	gameLoop (GameState gameWorld (Player name 0 [] True) "You wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
+	gender <- getGender
+	gameLoop (GameState (gameWorld gender) (Player name gender 0 [] True) "You wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
 	--outro
 
 
@@ -26,12 +27,19 @@ getName = do
 	putStrLn ("\nHello, "++name++"!")
 	return name
 
+getGender :: IO String
+getGender = do
+	putStrLn "Enter your gender (in quotation marks):"
+	rawInput <- getLine
+	gender <- return (read rawInput :: String)
+	return gender
+
 gameLoop :: GameState -> IO ()
 gameLoop oldState@(GameState _ _ "quit" _) = do
 	putStrLn "Game stopped."
 gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False))):locs) _) _ _ _) = do 
 	putStrLn "You Win!!!"
-gameLoop oldState@(GameState _ (Player _ _ _ False) _ _) = do
+gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
 	putStrLn "You Lost!!!"
 gameLoop oldState = do
 	displayState oldState

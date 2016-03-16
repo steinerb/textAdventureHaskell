@@ -17,7 +17,7 @@ textAdventure = do
 
 
 intro :: IO ()
-intro = do putStrLn "Welcome! Please enter all commands in quotation marks."
+intro = do putStrLn "Welcome!!!"
 
 getName :: IO String
 getName = do
@@ -44,8 +44,8 @@ gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
 gameLoop oldState = do
 	displayState oldState
 	rawInput <- getLine
-	action <- return (read rawInput :: String)
-	newState <- updateState oldState action
+	cmd <- return (read rawInput :: Command)
+	newState <- updateState oldState cmd
 	gameLoop newState
 	
 
@@ -54,29 +54,17 @@ displayState state = do
 	putStrLn (message state)
 	putStrLn ("Moves: "++(show (numTurns state)))
 
-updateState :: GameState -> String -> IO GameState
-updateState state "Quit" = do return (quit state)
-updateState state "quit" = do return (quit state)
-updateState state "Q" = do return (quit state)
-updateState state "q" = do return (quit state)
-updateState state "L" = do return (look state)
-updateState state "l" = do return (look state)
-updateState state "T" = do return (pickUp state)
-updateState state "t" = do return (pickUp state)
-updateState state "D" = do return (ditch state)
-updateState state "d" = do return (ditch state)
---updateState state "M" = do return (move state)
---updateState state "m" = do return (move state)
-updateState state "status" = do 
+
+updateState :: GameState -> Command -> IO GameState
+updateState state Quit = do return (quit state)
+updateState state Look = do return (look state)
+updateState state Take = do return (pickUp state)
+updateState state Drop = do return (ditch state)
+updateState state (Move dr) = do return (move state dr)
+updateState state Status = do 
 	putStrLn (show state)
 	return state
-updateState state "help" = do
+updateState state Help = do
 	help
 	return state
-updateState state "H" = do
-	help
-	return state
-updateState state "h" = do
-	help
-	return state
-updateState state other = do return (invalid state)
+updateState state Invalid = do return (invalid state)

@@ -1,4 +1,5 @@
 module Types where
+import Data.Char
 --version0.3
 
 
@@ -15,6 +16,45 @@ data Player = Player {playerName :: String, playerGender :: String, playerLoc ::
 
 data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} deriving (Show)
 
+--may save first 3 letters and location ID
+data Dir = Home
+		 | Forrest
+		 | TownStation
+		 | CityStation
+		 | Street
+		 | Gate
+		 | Monestary
+		 	deriving (Show, Eq)
+
+
+data Command = Quit
+			 | Look
+			 | Take
+			 | Drop
+			 | Move Dir
+			 | Status
+			 | Help
+			 | Invalid
+			 	deriving (Eq, Show)
+
+--Should be read last, but be careful with Invalid.
+instance Read Command where
+	readsPrec _ s
+		| map toLower s == "q" = [(Quit, "")]
+		| map toLower s == "l" = [(Look, "")]
+		| map toLower s == "t" = [(Take, "")]
+		| map toLower s == "d" = [(Drop, "")]
+		| map toLower s == "s" = [(Status, "")]
+		| map toLower s == "h" = [(Help, "")]
+		| take 3 (map toLower s) == "hom" = [((Move Home), "")]
+		| take 3 (map toLower s) == "for" = [((Move Forrest), "")]
+		| take 3 (map toLower s) == "tow" = [((Move TownStation), "")]
+		| take 3 (map toLower s) == "cit" = [((Move CityStation), "")]
+		| take 3 (map toLower s) == "str" = [((Move Street), "")]
+		| take 3 (map toLower s) == "gat" = [((Move Gate), "")]
+		| take 3 (map toLower s) == "mon" = [((Move Monestary), "")]
+		| map toLower s == map toLower s = [(Invalid, "")]
+		
 
 
 class Desc a where
@@ -36,17 +76,22 @@ instance Desc Player where
 --instance Desc World where
 
 
+class DirProperties a where
+	toString :: a -> String
+	getID :: a -> ID
 
-{-
-instance Show GameState where
-	show (GameState world player message) = (show player)++"\nCurrent Location: "++(show ((worldLocs world)!!(playerLoc player)))
-
-instance Show Location where
-	show (Location id name desc item enemy) = (show name)++": "++(show desc)
-
-instance Show Player where
-	show (Player name loc inv alive) = "Name: "++(show name)++"\nInventory: "++(show inv)++"\nAlive: "++(show alive)
-
-instance Show Item where
-	show (Item id name) = (show name)
--}
+instance DirProperties Dir where
+	toString Home = "Home"
+	toString Forrest = "Forrest"
+	toString TownStation = "TownStation"
+	toString CityStation = "CityStation"
+	toString Street = "Street"
+	toString Gate = "Gate"
+	toString Monestary = "Monestary"
+	getID Home = 0
+	getID Forrest = 1
+	getID TownStation = 2
+	getID CityStation = 3
+	getID Street = 4
+	getID Gate = 5
+	getID Monestary = 6

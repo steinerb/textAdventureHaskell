@@ -85,8 +85,6 @@ move state@(GameState world player message turns) req =
 	else
 		(GameState world player "You cannot go there!" turns)
 
-
-
 getAdjacentLocs :: GameState -> [Location]
 getAdjacentLocs state@(GameState world player message turns) = gALHelper locList curLocCons where
 	locList = (worldLocs world)

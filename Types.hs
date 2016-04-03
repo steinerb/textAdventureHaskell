@@ -16,7 +16,6 @@ data Player = Player {playerName :: String, playerGender :: String, playerLoc ::
 
 data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} deriving (Show)
 
---may save first 3 letters and location ID
 data Dir = Home
 		 | Forrest
 		 | TownStation
@@ -25,7 +24,6 @@ data Dir = Home
 		 | Gate
 		 | Monestary
 		 	deriving (Show, Eq)
-
 
 data Command = Quit
 			 | Look
@@ -36,44 +34,6 @@ data Command = Quit
 			 | Help
 			 | Invalid
 			 	deriving (Eq, Show)
-
---Should be read last, but be careful with Invalid.
-instance Read Command where
-	readsPrec _ s
-		| map toLower s == "q" = [(Quit, "")]
-		| map toLower s == "l" = [(Look, "")]
-		| map toLower s == "t" = [(Take, "")]
-		| map toLower s == "d" = [(Drop, "")]
-		| map toLower s == "s" = [(Status, "")]
-		| map toLower s == "h" = [(Help, "")]
-		| take 3 (map toLower s) == "hom" = [((Move Home), "")]
-		| take 3 (map toLower s) == "for" = [((Move Forrest), "")]
-		| take 3 (map toLower s) == "tow" = [((Move TownStation), "")]
-		| take 3 (map toLower s) == "cit" = [((Move CityStation), "")]
-		| take 3 (map toLower s) == "str" = [((Move Street), "")]
-		| take 3 (map toLower s) == "gat" = [((Move Gate), "")]
-		| take 3 (map toLower s) == "mon" = [((Move Monestary), "")]
-		| map toLower s == map toLower s = [(Invalid, "")]
-		
-
-
-class Desc a where
-	name :: a -> String
-	desc :: a -> String
-
-instance Desc Location where
-	name (Location _ n _ _ _) = n
-	desc (Location _ _ d _ _) = d
-
-instance Desc Item where
-	name (Item _ n _) = n
-	desc (Item _ _ d) = d
-
-instance Desc Player where
-	name (Player n _ _ _ _) = n
-	desc (Player n g _ i _) = "Name: "++n++"\nGender: "++g++"\nInventory: "++(unwords (map name i))
-
---instance Desc World where
 
 
 class DirProperties a where
@@ -95,3 +55,49 @@ instance DirProperties Dir where
 	getID Street = 4
 	getID Gate = 5
 	getID Monestary = 6
+
+
+instance Read Command where
+	readsPrec _ s
+		| map toLower s == "q" = [(Quit, "")]
+		| map toLower s == "l" = [(Look, "")]
+		| map toLower s == "t" = [(Take, "")]
+		| map toLower s == "d" = [(Drop, "")]
+		| map toLower s == "s" = [(Status, "")]
+		| map toLower s == "h" = [(Help, "")]
+		| take 3 (map toLower s) == "hom" = [((Move Home), "")]
+		| take 3 (map toLower s) == "for" = [((Move Forrest), "")]
+		| take 3 (map toLower s) == "tow" = [((Move TownStation), "")]
+		| take 3 (map toLower s) == "cit" = [((Move CityStation), "")]
+		| take 3 (map toLower s) == "str" = [((Move Street), "")]
+		| take 3 (map toLower s) == "gat" = [((Move Gate), "")]
+		| take 3 (map toLower s) == "mon" = [((Move Monestary), "")]
+		| map toLower s == map toLower s = [(Invalid, "")]
+		
+
+class Desc a where
+	name :: a -> String
+	desc :: a -> String
+
+instance Desc Location where
+	name (Location _ n _ _ _) = n
+	desc (Location _ _ d _ _) = d
+
+instance Desc Item where
+	name (Item _ n _) = n
+	desc (Item _ _ d) = d
+
+instance Desc Player where
+	name (Player n _ _ _ _) = n
+	desc (Player n g _ i _) = "Name: "++n++"\nGender: "++g++"\nInventory: "++(unwords (map name i))
+
+--instance Desc World where
+
+{-
+class Container a where
+	contents :: c -> [Item]
+	acquire :: c -> Item -> c
+	release :: c -> Item -> c
+	contains :: c -> Item -> Bool
+	isEmpty :: c -> Bool
+-}

@@ -1,6 +1,6 @@
 module GameData where
 import Types
---version0.3
+--version0.5
 
 
 testState :: GameState

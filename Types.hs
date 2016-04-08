@@ -27,8 +27,8 @@ data Dir = Home
 
 data Command = Quit
 			 | Look
-			 | Take
-			 | Drop
+			 | Take String
+			 | Drop String
 			 | Move Dir
 			 | Status
 			 | Help
@@ -61,8 +61,8 @@ instance Read Command where
 	readsPrec _ s
 		| map toLower s == "q" = [(Quit, "")]
 		| map toLower s == "l" = [(Look, "")]
-		| map toLower s == "t" = [(Take, "")]
-		| map toLower s == "d" = [(Drop, "")]
+		| take 2 (map toLower s) == "t " = [(Take ((words s)!!1), "")]
+		| take 2 (map toLower s) == "d " = [(Drop ((words s)!!1), "")]
 		| map toLower s == "s" = [(Status, "")]
 		| map toLower s == "h" = [(Help, "")]
 		| take 3 (map toLower s) == "hom" = [((Move Home), "")]
@@ -93,11 +93,25 @@ instance Desc Player where
 
 --instance Desc World where
 
-{-
-class Container a where
+
+class Container c where
 	contents :: c -> [Item]
 	acquire :: c -> Item -> c
 	release :: c -> Item -> c
 	contains :: c -> Item -> Bool
 	isEmpty :: c -> Bool
--}
+
+
+instance Container Player where
+	contents (Player _ _ _ is _) = is
+	acquire (Player n g l is a) i = Player n g l (i:is) a
+	release (Player n g l is a) i = Player n g l (filter (/=i) is) a
+	contains (Player _ _ _ is _) i = i `elem` is
+	isEmpty (Player _ _ _ is _) = if is == [] then True else False
+
+instance Container Location where
+	contents (Location _ _ _ is _) = is
+	acquire (Location id n d is e) i = Location id n d (i:is) e
+	release (Location id n d is e) i = Location id n d (filter (/=i) is) e
+	contains (Location _ _ _ is _) i = i `elem` is
+	isEmpty (Location _ _ _ is _) = if is == [] then True else False

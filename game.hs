@@ -9,7 +9,7 @@ main = textAdventure
 
 textAdventure :: IO ()
 textAdventure = do
-	intro 
+	intro
 	name <- getName
 	gender <- getGender
 	gameLoop (GameState (gameWorld gender) (Player name gender 0 [] True) "You wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
@@ -58,8 +58,8 @@ displayState state = do
 updateState :: GameState -> Command -> IO GameState
 updateState state Quit = do return (quit state)
 updateState state Look = do return (look state)
-updateState state Take = do return (pickUp state)
-updateState state Drop = do return (ditch state)
+updateState state (Take iName) = do return (pickUp state iName)
+updateState state (Drop iName) = do return (ditch state iName)
 updateState state (Move dr) = do return (move state dr)
 updateState state Status = do 
 	putStrLn (show state)

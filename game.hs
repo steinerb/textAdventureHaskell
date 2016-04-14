@@ -1,7 +1,7 @@
 import Types
 import GameData
 import Functions
---version0.5
+--version0.7
 
 
 main :: IO ()

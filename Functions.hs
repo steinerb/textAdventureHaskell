@@ -1,6 +1,6 @@
 module Functions where
 import Types
---version0.5
+--version0.7
 
 
 invalid :: GameState -> GameState

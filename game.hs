@@ -34,10 +34,11 @@ getGender = do
 	gender <- return (read rawInput :: String)
 	return gender
 
+--added an extra _ to the Location on line 41 after the (Enemy _ False)
 gameLoop :: GameState -> IO ()
 gameLoop oldState@(GameState _ _ "quit" _) = do
 	putStrLn "Game stopped."
-gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False))):locs) _) _ _ _) = do 
+gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False)) _):locs) _) _ _ _) = do 
 	putStrLn "You Win!!!"
 gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
 	putStrLn "You Lost!!!"

@@ -24,7 +24,7 @@ help = do
 	putStrLn ("(H)elp: Display this list of commands")
 	putStrLn ("--------------------------------------------------------------------------------")
 	
-
+{-
 look :: GameState -> GameState
 look (GameState world player message turns) = 
 	if (isEmpty loc)
@@ -35,6 +35,21 @@ look (GameState world player message turns) =
 			("You look around and see "++(desc (loc))++"\n\t\tYou notice these items nearby: "++(unwords (map name (contents loc))) ) turns)
 	where
 		loc = (worldLocs world)!!(playerLoc player)
+-}
+--ADDED: searched w, locs n
+look :: GameState -> GameState
+look (GameState world player message turns) = 
+	if (isEmpty loc)
+		then (GameState (search world) player 
+			("You look around and see "++(desc (loc)) ) turns)
+	else
+		(GameState (search world) player 
+			("You look around and see "++(desc (loc))++"\n\t\tYou notice these items nearby: "++(unwords (map name (contents loc))) ) turns)
+	where
+		loc = (worldLocs world)!!(playerLoc player)
+		search w@(World ls cs) = (World (locs (locID loc)) cs)
+		locs n = ((take n (worldLocs world))++[(Location (locID loc) (name loc) (desc loc) (contents loc) (locEnemy loc) True)]++(drop (n+1) (worldLocs world)))
+
 
 
 inventory :: GameState -> GameState
@@ -44,9 +59,32 @@ inventory (GameState world player@(Player _ _ _ inv _) message turns) =
 	else
 		(GameState world player ("Your items: "++(unwords (map name (contents player)))) turns)
 
+{-
 pickUp :: GameState -> String -> GameState
 pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
 	if (isEmpty loc) then
+		GameState world player "There is no item to pick up!" turns
+	else if (req `elem` (map (name) (contents loc))) == False then 
+		GameState world player "That is not an item you can pick up!" turns
+	else
+		(
+		GameState 
+			(World (locs (playerLoc player)) (worldCons world))
+			(acquire player item) 
+			("You pick up the "++req++".")
+			(turns+1)
+		)
+	where 
+		loc = (worldLocs world)!!(playerLoc player)
+		item = head (filter ((==req).(name)) (contents loc))
+		locs n = ((take n (worldLocs world))++[(release loc item)]++(drop (n+1) (worldLocs world)))
+-}
+--added a conditional before (isEmpty loc)
+pickUp :: GameState -> String -> GameState
+pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
+	if ((searched loc) == False) then
+		GameState world player "You have not searched your surroundings!" turns
+	else if (isEmpty loc) then
 		GameState world player "There is no item to pick up!" turns
 	else if (req `elem` (map (name) (contents loc))) == False then 
 		GameState world player "That is not an item you can pick up!" turns

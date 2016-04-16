@@ -8,7 +8,8 @@ type ID = Int
 type Message = String
 
 data World = World {worldLocs :: [Location], worldCons :: [[Con]]} deriving (Show)
-data Location = Location {locID :: ID, locName :: String, locDesc :: String, locItem :: [Item], locEnemy :: Maybe Enemy} deriving (Show)
+--added searched
+data Location = Location {locID :: ID, locName :: String, locDesc :: String, locItem :: [Item], locEnemy :: Maybe Enemy, searched :: Bool} deriving (Show)
 data Item = Item {itemID :: ID, itemName :: String, itemDesc :: String} deriving (Eq, Show)
 data Enemy = Enemy {enemyName :: String, isAlive :: Bool} deriving (Show)
 
@@ -81,9 +82,10 @@ class Desc a where
 	name :: a -> String
 	desc :: a -> String
 
+--added 6th _
 instance Desc Location where
-	name (Location _ n _ _ _) = n
-	desc (Location _ _ d _ _) = d
+	name (Location _ n _ _ _ _) = n
+	desc (Location _ _ d _ _ _) = d
 
 instance Desc Item where
 	name (Item _ n _) = n
@@ -110,9 +112,10 @@ instance Container Player where
 	contains (Player _ _ _ is _) i = i `elem` is
 	isEmpty (Player _ _ _ is _) = if is == [] then True else False
 
+--added 6th to Locations (_ or s)
 instance Container Location where
-	contents (Location _ _ _ is _) = is
-	acquire (Location id n d is e) i = Location id n d (i:is) e
-	release (Location id n d is e) i = Location id n d (filter (/=i) is) e
-	contains (Location _ _ _ is _) i = i `elem` is
-	isEmpty (Location _ _ _ is _) = if is == [] then True else False
+	contents (Location _ _ _ is _ _) = is
+	acquire (Location id n d is e s) i = Location id n d (i:is) e s
+	release (Location id n d is e s) i = Location id n d (filter (/=i) is) e s
+	contains (Location _ _ _ is _ _) i = i `elem` is
+	isEmpty (Location _ _ _ is _ _) = if is == [] then True else False

@@ -58,6 +58,7 @@ displayState state = do
 updateState :: GameState -> Command -> IO GameState
 updateState state Quit = do return (quit state)
 updateState state Look = do return (look state)
+updateState state Inventory = do return (inventory state)
 updateState state (Take iName) = do return (pickUp state iName)
 updateState state (Drop iName) = do return (ditch state iName)
 updateState state (Move dr) = do return (move state dr)

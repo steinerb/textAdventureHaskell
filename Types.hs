@@ -12,7 +12,7 @@ data Location = Location {locID :: ID, locName :: String, locDesc :: String, loc
 data Item = Item {itemID :: ID, itemName :: String, itemDesc :: String} deriving (Eq, Show)
 data Enemy = Enemy {enemyName :: String, isAlive :: Bool} deriving (Show)
 
-data Player = Player {playerName :: String, playerGender :: String, playerLoc :: ID, inventory :: [Item], stillAlive :: Bool} deriving (Show)
+data Player = Player {playerName :: String, playerGender :: String, playerLoc :: ID, stuff :: [Item], stillAlive :: Bool} deriving (Show)
 
 data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} deriving (Show)
 
@@ -27,6 +27,7 @@ data Dir = Home
 
 data Command = Quit
 			 | Look
+			 | Inventory
 			 | Take String
 			 | Drop String
 			 | Move Dir
@@ -61,6 +62,7 @@ instance Read Command where
 	readsPrec _ s
 		| map toLower s == "q" = [(Quit, "")]
 		| map toLower s == "l" = [(Look, "")]
+		| map toLower s == "i" = [(Inventory, "")]
 		| take 2 (map toLower s) == "t " = [(Take ((words s)!!1), "")]
 		| take 2 (map toLower s) == "d " = [(Drop ((words s)!!1), "")]
 		| map toLower s == "s" = [(Status, "")]
@@ -91,7 +93,6 @@ instance Desc Player where
 	name (Player n _ _ _ _) = n
 	desc (Player n g _ i _) = "Name: "++n++"\nGender: "++g++"\nInventory: "++(unwords (map name i))
 
---instance Desc World where
 
 
 class Container c where

@@ -16,6 +16,7 @@ help = do
 	putStrLn ("Commands:\n--------------------------------------------------------------------------------")
 	putStrLn ("(Q)uit: Exit the game")
 	putStrLn ("(L)ook: Gives a description of your current location and a name of a nearby item")
+	putStrLn ("(I)nventory: Shows you your current items")
 	putStrLn ("(T)ake [ITEM NAME]: Pick up a desired item")
 	putStrLn ("(D)rop [ITEM NAME]: Drop a desired item")
 	putStrLn ("(S)tatus: Displays information about the current game state (for developers only)")
@@ -34,7 +35,14 @@ look (GameState world player message turns) =
 			("You look around and see "++(desc (loc))++"\n\t\tYou notice these items nearby: "++(unwords (map name (contents loc))) ) turns)
 	where
 		loc = (worldLocs world)!!(playerLoc player)
-		
+
+
+inventory :: GameState -> GameState
+inventory (GameState world player@(Player _ _ _ inv _) message turns) =
+	if (isEmpty player) then 
+		(GameState world player ("You aren't holding anything.") turns)
+	else
+		(GameState world player ("Your items: "++(unwords (map name (contents player)))) turns)
 
 pickUp :: GameState -> String -> GameState
 pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
@@ -54,7 +62,6 @@ pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
 		loc = (worldLocs world)!!(playerLoc player)
 		item = head (filter ((==req).(name)) (contents loc))
 		locs n = ((take n (worldLocs world))++[(release loc item)]++(drop (n+1) (worldLocs world)))
---FILTER MAY INCLUDE /=req OR ==req
 
 ditch :: GameState -> String -> GameState
 ditch (GameState world player@(Player _ _ _ inv _) message turns) req = 
@@ -74,7 +81,6 @@ ditch (GameState world player@(Player _ _ _ inv _) message turns) req =
 		loc = (worldLocs world)!!(playerLoc player)
 		item = head (filter ((==req).(name)) (contents player))
 		locs n = ((take n (worldLocs world))++[(acquire loc item)]++(drop (n+1) (worldLocs world)))
---FILTER MAY INCLUDE /=req OR ==req
 
 getItems :: World -> [[Item]]
 getItems world = map (getItem) (worldLocs world) where
@@ -89,7 +95,7 @@ move state@(GameState world player message turns) req =
 	if (toString req) `elem` (map (name) (getAdjacentLocs state)) then
 		(GameState 
 			world 
-			(Player (name player) (playerGender player) (getID req) (inventory player) (stillAlive player)) 
+			(Player (name player) (playerGender player) (getID req) (stuff player) (stillAlive player)) 
 			("You head for the "++(toString req)) 
 			(turns+1)
 		)

@@ -5,12 +5,12 @@ import Types
 
 testState :: GameState
 testState = GameState (gameWorld "Female") (Player "Test" "Female" 0 [] True) "You wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0
+--testState = Terminated "This is a test!"
 
 
 gameWorld :: String -> World
 gameWorld g = World (locations g) connections
 
---added the "searched" boolean to Locations
 locations :: String -> [Location]
 locations g = if (head g) == 'F' || (head g) == 'f' || (head g) == 'G' || (head g) == 'g' || (head g) == 'W' || (head g) == 'w' then
 			[

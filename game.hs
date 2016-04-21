@@ -12,7 +12,7 @@ textAdventure = do
 	intro
 	name <- getName
 	gender <- getGender
-	gameLoop (GameState (gameWorld gender) (Player name gender 0 [] True) "You wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
+	gameLoop (GameState (gameWorld gender) (Player name gender 0 [] True) "You have 20 moves until it's too late.\nYou wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
 	--outro
 
 
@@ -34,14 +34,33 @@ getGender = do
 	gender <- return (read rawInput :: String)
 	return gender
 
---added an extra _ to the Location on line 41 after the (Enemy _ False)
+{-
 gameLoop :: GameState -> IO ()
 gameLoop oldState@(GameState _ _ "quit" _) = do
 	putStrLn "Game stopped."
 gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False)) _):locs) _) _ _ _) = do 
 	putStrLn "You Win!!!"
 gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
-	putStrLn "You Lost!!!"
+	gameLoop "You Lost!!!"
+gameLoop oldState = do
+	displayState oldState
+	rawInput <- getLine
+	cmd <- return (read rawInput :: Command)
+	newState <- updateState oldState cmd
+	gameLoop newState
+-}
+--added Terminated Pattern
+gameLoop :: GameState -> IO ()
+gameLoop oldState@(Terminated msg) = do
+	putStrLn msg
+gameLoop oldState@(GameState _ _ "quit" _) = do
+	putStrLn "Game stopped."
+gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False)) _):locs) _) _ _ _) = do 
+	putStrLn "You Win!!!"
+gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
+	gameLoop (Terminated "You have been killed!")
+gameLoop oldState@(GameState _ _ _ 4) = do
+	gameLoop (Terminated "Time's up!")
 gameLoop oldState = do
 	displayState oldState
 	rawInput <- getLine
@@ -59,6 +78,7 @@ displayState state = do
 updateState :: GameState -> Command -> IO GameState
 updateState state Quit = do return (quit state)
 updateState state Look = do return (look state)
+updateState state Check = do return (checkStatus state)
 updateState state Inventory = do return (inventory state)
 updateState state (Take iName) = do return (pickUp state iName)
 updateState state (Drop iName) = do return (ditch state iName)

@@ -1,4 +1,5 @@
 module Functions where
+import Data.Char
 import Types
 --version0.7
 
@@ -16,27 +17,16 @@ help = do
 	putStrLn ("Commands:\n--------------------------------------------------------------------------------")
 	putStrLn ("(Q)uit: Exit the game")
 	putStrLn ("(L)ook: Gives a description of your current location and a name of a nearby item")
+	putStrLn ("(C)heck Status: Shows you your player information and how many moves are left")
 	putStrLn ("(I)nventory: Shows you your current items")
 	putStrLn ("(T)ake [ITEM NAME]: Pick up a desired item")
 	putStrLn ("(D)rop [ITEM NAME]: Drop a desired item")
 	putStrLn ("(S)tatus: Displays information about the current game state (for developers only)")
-	putStrLn (" Move: Type at least the first 3 letters of the location you wish to go to.")
+	putStrLn (" Move: Type at least the first 3 letters of the location you wish to go to")
 	putStrLn ("(H)elp: Display this list of commands")
 	putStrLn ("--------------------------------------------------------------------------------")
 	
-{-
-look :: GameState -> GameState
-look (GameState world player message turns) = 
-	if (isEmpty loc)
-		then (GameState world player 
-			("You look around and see "++(desc (loc)) ) turns)
-	else
-		(GameState world player 
-			("You look around and see "++(desc (loc))++"\n\t\tYou notice these items nearby: "++(unwords (map name (contents loc))) ) turns)
-	where
-		loc = (worldLocs world)!!(playerLoc player)
--}
---ADDED: searched w, locs n
+
 look :: GameState -> GameState
 look (GameState world player message turns) = 
 	if (isEmpty loc)
@@ -51,7 +41,6 @@ look (GameState world player message turns) =
 		locs n = ((take n (worldLocs world))++[(Location (locID loc) (name loc) (desc loc) (contents loc) (locEnemy loc) True)]++(drop (n+1) (worldLocs world)))
 
 
-
 inventory :: GameState -> GameState
 inventory (GameState world player@(Player _ _ _ inv _) message turns) =
 	if (isEmpty player) then 
@@ -59,34 +48,14 @@ inventory (GameState world player@(Player _ _ _ inv _) message turns) =
 	else
 		(GameState world player ("Your items: "++(unwords (map name (contents player)))) turns)
 
-{-
-pickUp :: GameState -> String -> GameState
-pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
-	if (isEmpty loc) then
-		GameState world player "There is no item to pick up!" turns
-	else if (req `elem` (map (name) (contents loc))) == False then 
-		GameState world player "That is not an item you can pick up!" turns
-	else
-		(
-		GameState 
-			(World (locs (playerLoc player)) (worldCons world))
-			(acquire player item) 
-			("You pick up the "++req++".")
-			(turns+1)
-		)
-	where 
-		loc = (worldLocs world)!!(playerLoc player)
-		item = head (filter ((==req).(name)) (contents loc))
-		locs n = ((take n (worldLocs world))++[(release loc item)]++(drop (n+1) (worldLocs world)))
--}
---added a conditional before (isEmpty loc)
+--editing to make case sensitive (lines 56 & 68)
 pickUp :: GameState -> String -> GameState
 pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
 	if ((searched loc) == False) then
 		GameState world player "You have not searched your surroundings!" turns
 	else if (isEmpty loc) then
 		GameState world player "There is no item to pick up!" turns
-	else if (req `elem` (map (name) (contents loc))) == False then 
+	else if (req `elem` (map (name) (contents loc))) == False then  
 		GameState world player "That is not an item you can pick up!" turns
 	else
 		(
@@ -101,6 +70,7 @@ pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
 		item = head (filter ((==req).(name)) (contents loc))
 		locs n = ((take n (worldLocs world))++[(release loc item)]++(drop (n+1) (worldLocs world)))
 
+--editing to make case sensitive (lines 76 & 88)
 ditch :: GameState -> String -> GameState
 ditch (GameState world player@(Player _ _ _ inv _) message turns) req = 
 	if (isEmpty player) then 
@@ -150,4 +120,10 @@ getAdjacentLocs state@(GameState world player message turns) = gALHelper locList
 		if (head conList) == 1 then (head locList):(gALHelper (tail locList) (tail conList))
 		else (gALHelper (tail locList) (tail conList))
 
-
+checkStatus :: GameState -> GameState
+checkStatus state@(GameState world player message turns) = 
+	(
+		GameState world player
+		("Player Status:\n"++(desc player)++"\nMoves Remaining: "++(show (20-turns)))
+		turns
+	)

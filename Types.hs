@@ -8,14 +8,16 @@ type ID = Int
 type Message = String
 
 data World = World {worldLocs :: [Location], worldCons :: [[Con]]} deriving (Show)
---added searched
 data Location = Location {locID :: ID, locName :: String, locDesc :: String, locItem :: [Item], locEnemy :: Maybe Enemy, searched :: Bool} deriving (Show)
 data Item = Item {itemID :: ID, itemName :: String, itemDesc :: String} deriving (Eq, Show)
 data Enemy = Enemy {enemyName :: String, isAlive :: Bool} deriving (Show)
 
 data Player = Player {playerName :: String, playerGender :: String, playerLoc :: ID, stuff :: [Item], stillAlive :: Bool} deriving (Show)
 
-data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} deriving (Show)
+--added Terminated Constructor
+data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} 
+			   | Terminated Message
+					deriving (Show)
 
 data Dir = Home
 		 | Forrest
@@ -28,6 +30,7 @@ data Dir = Home
 
 data Command = Quit
 			 | Look
+			 | Check
 			 | Inventory
 			 | Take String
 			 | Drop String
@@ -63,6 +66,7 @@ instance Read Command where
 	readsPrec _ s
 		| map toLower s == "q" = [(Quit, "")]
 		| map toLower s == "l" = [(Look, "")]
+		| map toLower s == "c" = [(Check, "")]
 		| map toLower s == "i" = [(Inventory, "")]
 		| take 2 (map toLower s) == "t " = [(Take ((words s)!!1), "")]
 		| take 2 (map toLower s) == "d " = [(Drop ((words s)!!1), "")]
@@ -82,7 +86,6 @@ class Desc a where
 	name :: a -> String
 	desc :: a -> String
 
---added 6th _
 instance Desc Location where
 	name (Location _ n _ _ _ _) = n
 	desc (Location _ _ d _ _ _) = d
@@ -112,7 +115,6 @@ instance Container Player where
 	contains (Player _ _ _ is _) i = i `elem` is
 	isEmpty (Player _ _ _ is _) = if is == [] then True else False
 
---added 6th to Locations (_ or s)
 instance Container Location where
 	contents (Location _ _ _ is _ _) = is
 	acquire (Location id n d is e s) i = Location id n d (i:is) e s

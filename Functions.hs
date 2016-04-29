@@ -16,7 +16,7 @@ help :: IO ()
 help = do
 	putStrLn ("Commands:\n--------------------------------------------------------------------------------")
 	putStrLn ("(Q)uit: Exit the game")
-	putStrLn ("(L)ook: Gives a description of your current location and a name of a nearby item")
+	putStrLn ("e(X)amine: Gives a description of your current location and a name of a nearby item")
 	putStrLn ("(C)heck Status: Shows you your player information and how many moves are left")
 	putStrLn ("(I)nventory: Shows you your current items")
 	putStrLn ("(T)ake [ITEM NAME]: Pick up a desired item")
@@ -27,8 +27,8 @@ help = do
 	putStrLn ("--------------------------------------------------------------------------------")
 	
 
-look :: GameState -> GameState
-look (GameState world player message turns) = 
+examine :: GameState -> GameState
+examine (GameState world player message turns) = 
 	if (isEmpty loc)
 		then (GameState (search world) player 
 			("You look around and see "++(desc (loc)) ) turns)
@@ -46,7 +46,7 @@ inventory (GameState world player@(Player _ _ _ inv _) message turns) =
 	if (isEmpty player) then 
 		(GameState world player ("You aren't holding anything.") turns)
 	else
-		(GameState world player ("Your items: "++(unwords (map name (contents player)))) turns)
+		(GameState world player ("Your items:\n----------------------------\n"++(unwords (map name (contents player)))) turns)
 
 --editing to make case sensitive (lines 56 & 68)
 pickUp :: GameState -> String -> GameState
@@ -141,6 +141,6 @@ checkStatus :: GameState -> GameState
 checkStatus state@(GameState world player message turns) = 
 	(
 		GameState world player
-		("Player Status:\n"++(desc player)++"\nMoves Remaining: "++(show (20-turns)))
+		("Player Status:\n-------------------\n"++(desc player)++"\nMoves Remaining: "++(show (20-turns)))
 		turns
 	)

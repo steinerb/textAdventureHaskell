@@ -25,7 +25,7 @@ data Dir = North
 			deriving (Show, Eq)
 
 data Command = Quit
-			 | Look
+			 | Examine
 			 | Check
 			 | Inventory
 			 | Take String
@@ -40,7 +40,7 @@ data Command = Quit
 instance Read Command where
 	readsPrec _ s
 		| map toLower s == "q" = [(Quit, "")]
-		| map toLower s == "l" = [(Look, "")]
+		| map toLower s == "x" = [(Examine, "")]
 		| map toLower s == "c" = [(Check, "")]
 		| map toLower s == "i" = [(Inventory, "")]
 		| take 2 (map toLower s) == "t " = [(Take ((words s)!!1), "")]
@@ -51,6 +51,7 @@ instance Read Command where
 		| map toLower s == "e" = [((Move East), "")]
 		| map toLower s == "s" = [((Move South), "")]
 		| map toLower s == "w" = [((Move West), "")]
+		| s == s = [(Invalid, "")]
 		
 
 class Desc a where

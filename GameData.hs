@@ -5,7 +5,7 @@ import Types
 
 testState :: GameState
 testState = GameState (gameWorld "Female") (Player "Test" "Female" 0 [] True) "You wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0
---testState = Terminated "This is a test!"
+--testState = Terminated "This is a test! Your entire life is a test! Everything you know as you know it is a lie!"
 
 
 gameWorld :: String -> World
@@ -36,11 +36,11 @@ locations g = if (head g) == 'F' || (head g) == 'f' || (head g) == 'G' || (head 
 connections :: [[Con]]
 connections = 
 			[
-				[0, 1, 1, 0, 0, 0, 0],
-				[1, 0, 0, 0, 0, 0, 0],
-				[1, 0, 0, 1, 0, 0, 0],
-				[0, 0, 1, 0, 1, 1, 0],
-				[0, 0, 0, 1, 0, 0, 0],
-				[0, 0, 0, 1, 0, 0, 1],
-				[0, 0, 0, 0, 0, 1, 0]
+				[0, 2, 4, 0, 0, 0, 0],
+				[4, 0, 0, 0, 0, 0, 0],
+				[2, 0, 0, 1, 0, 0, 0],
+				[0, 0, 3, 0, 1, 2, 0],
+				[0, 0, 0, 3, 0, 0, 0],
+				[0, 0, 0, 4, 0, 0, 1],
+				[0, 0, 0, 0, 0, 3, 0]
 			]

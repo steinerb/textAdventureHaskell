@@ -21,8 +21,8 @@ help = do
 	putStrLn ("(I)nventory: Shows you your current items")
 	putStrLn ("(T)ake [ITEM NAME]: Pick up a desired item")
 	putStrLn ("(D)rop [ITEM NAME]: Drop a desired item")
-	putStrLn ("(S)tatus: Displays information about the current game state (for developers only)")
-	putStrLn (" Move: Type at least the first 3 letters of the location you wish to go to")
+	putStrLn ("(G)ame: Displays information about the current game state (for developers only)")
+	putStrLn ("Move: Type the first letter of the cardinal direction you want to go (N,E,S,W)")
 	putStrLn ("(H)elp: Display this list of commands")
 	putStrLn ("--------------------------------------------------------------------------------")
 	
@@ -98,27 +98,44 @@ getItemsByID :: World -> ID -> [Item]
 getItemsByID world id = (getItems world)!!id
 
 
-move :: GameState-> Dir -> GameState
+move :: GameState -> Dir -> GameState
 move state@(GameState world player message turns) req = 
-	if (toString req) `elem` (map (name) (getAdjacentLocs state)) then
+	if req `elem` (map (getDir) (getAdjacentLocs state)) then
 		(GameState 
 			world 
-			(Player (name player) (playerGender player) (getID req) (stuff player) (stillAlive player)) 
-			("You head for the "++(toString req)) 
+			(Player 
+				(name player) 
+				(playerGender player) 
+				(locID loc) 
+				(stuff player) 
+				(stillAlive player)
+			) 
+			("You head for the "++(name loc)) 
 			(turns+1)
 		)
 	else
 		(GameState world player "You cannot go there!" turns)
+	where loc = (getLoc (head (filter ((==req).getDir) (getAdjacentLocs state))))
 
-getAdjacentLocs :: GameState -> [Location]
+getAdjacentLocs :: GameState -> [(Location, Dir)]
 getAdjacentLocs state@(GameState world player message turns) = gALHelper locList curLocCons where
 	locList = (worldLocs world)
 	curLocCons = (worldCons world)!!(playerLoc player)
 	gALHelper _ [] = []
 	gALHelper [] _ = []
 	gALHelper locList conList =
-		if (head conList) == 1 then (head locList):(gALHelper (tail locList) (tail conList))
+		if (head conList) == 1 then ((head locList), North):(gALHelper (tail locList) (tail conList))
+		else if (head conList) == 2 then ((head locList), East):(gALHelper (tail locList) (tail conList))
+		else if (head conList) == 3 then ((head locList), South):(gALHelper (tail locList) (tail conList))
+		else if (head conList) == 4 then ((head locList), West):(gALHelper (tail locList) (tail conList))
 		else (gALHelper (tail locList) (tail conList))
+
+getDir :: (Location, Dir) -> Dir
+getDir (l, d) = d
+
+getLoc :: (Location, Dir) -> Location
+getLoc (l, d) = l
+
 
 checkStatus :: GameState -> GameState
 checkStatus state@(GameState world player message turns) = 

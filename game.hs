@@ -34,22 +34,7 @@ getGender = do
 	gender <- return (read rawInput :: String)
 	return gender
 
-{-
-gameLoop :: GameState -> IO ()
-gameLoop oldState@(GameState _ _ "quit" _) = do
-	putStrLn "Game stopped."
-gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False)) _):locs) _) _ _ _) = do 
-	putStrLn "You Win!!!"
-gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
-	gameLoop "You Lost!!!"
-gameLoop oldState = do
-	displayState oldState
-	rawInput <- getLine
-	cmd <- return (read rawInput :: Command)
-	newState <- updateState oldState cmd
-	gameLoop newState
--}
---added Terminated Pattern
+
 gameLoop :: GameState -> IO ()
 gameLoop oldState@(Terminated msg) = do
 	putStrLn msg
@@ -59,7 +44,7 @@ gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False
 	putStrLn "You Win!!!"
 gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
 	gameLoop (Terminated "You have been killed!")
-gameLoop oldState@(GameState _ _ _ 4) = do
+gameLoop oldState@(GameState _ _ _ 20) = do
 	gameLoop (Terminated "Time's up!")
 gameLoop oldState = do
 	displayState oldState

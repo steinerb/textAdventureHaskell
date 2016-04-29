@@ -14,19 +14,15 @@ data Enemy = Enemy {enemyName :: String, isAlive :: Bool} deriving (Show)
 
 data Player = Player {playerName :: String, playerGender :: String, playerLoc :: ID, stuff :: [Item], stillAlive :: Bool} deriving (Show)
 
---added Terminated Constructor
 data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: Message, numTurns :: Int} 
 			   | Terminated Message
 					deriving (Show)
 
-data Dir = Home
-		 | Forrest
-		 | TownStation
-		 | CityStation
-		 | Street
-		 | Gate
-		 | Monestary
-		 	deriving (Show, Eq)
+data Dir = North
+		 | East
+		 | South
+		 | West
+			deriving (Show, Eq)
 
 data Command = Quit
 			 | Look
@@ -41,27 +37,6 @@ data Command = Quit
 			 	deriving (Eq, Show)
 
 
-class DirProperties a where
-	toString :: a -> String
-	getID :: a -> ID
-
-instance DirProperties Dir where
-	toString Home = "Home"
-	toString Forrest = "Forrest"
-	toString TownStation = "TownStation"
-	toString CityStation = "CityStation"
-	toString Street = "Street"
-	toString Gate = "Gate"
-	toString Monestary = "Monestary"
-	getID Home = 0
-	getID Forrest = 1
-	getID TownStation = 2
-	getID CityStation = 3
-	getID Street = 4
-	getID Gate = 5
-	getID Monestary = 6
-
-
 instance Read Command where
 	readsPrec _ s
 		| map toLower s == "q" = [(Quit, "")]
@@ -70,16 +45,12 @@ instance Read Command where
 		| map toLower s == "i" = [(Inventory, "")]
 		| take 2 (map toLower s) == "t " = [(Take ((words s)!!1), "")]
 		| take 2 (map toLower s) == "d " = [(Drop ((words s)!!1), "")]
-		| map toLower s == "s" = [(Status, "")]
+		| map toLower s == "g" = [(Status, "")]
 		| map toLower s == "h" = [(Help, "")]
-		| take 3 (map toLower s) == "hom" = [((Move Home), "")]
-		| take 3 (map toLower s) == "for" = [((Move Forrest), "")]
-		| take 3 (map toLower s) == "tow" = [((Move TownStation), "")]
-		| take 3 (map toLower s) == "cit" = [((Move CityStation), "")]
-		| take 3 (map toLower s) == "str" = [((Move Street), "")]
-		| take 3 (map toLower s) == "gat" = [((Move Gate), "")]
-		| take 3 (map toLower s) == "mon" = [((Move Monestary), "")]
-		| map toLower s == map toLower s = [(Invalid, "")]
+		| map toLower s == "n" = [((Move North), "")]
+		| map toLower s == "e" = [((Move East), "")]
+		| map toLower s == "s" = [((Move South), "")]
+		| map toLower s == "w" = [((Move West), "")]
 		
 
 class Desc a where

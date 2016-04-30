@@ -1,5 +1,5 @@
 module Functions where
-import Data.Char
+import Data.Text (pack, toLower)	
 import Types
 --version0.7
 
@@ -48,14 +48,14 @@ inventory (GameState world player@(Player _ _ _ inv _) message turns) =
 	else
 		(GameState world player ("Your items:\n----------------------------\n"++(unwords (map name (contents player)))) turns)
 
---editing to make case sensitive (lines 56 & 68)
+
 pickUp :: GameState -> String -> GameState
 pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
 	if ((searched loc) == False) then
 		GameState world player "You have not searched your surroundings!" turns
 	else if (isEmpty loc) then
 		GameState world player "There is no item to pick up!" turns
-	else if (req `elem` (map (name) (contents loc))) == False then  
+	else if (reqL `elem` (map (toLower.pack.name) (contents loc))) == False then  
 		GameState world player "That is not an item you can pick up!" turns
 	else
 		(
@@ -65,17 +65,18 @@ pickUp (GameState world player@(Player _ _ _ inv _) message turns) req =
 			("You pick up the "++req++".")
 			(turns+1)
 		)
-	where 
+	where
+		reqL = toLower (pack req) 
 		loc = (worldLocs world)!!(playerLoc player)
-		item = head (filter ((==req).(name)) (contents loc))
+		item = head (filter ((==reqL).(toLower.pack.name)) (contents loc))
 		locs n = ((take n (worldLocs world))++[(release loc item)]++(drop (n+1) (worldLocs world)))
 
---editing to make case sensitive (lines 76 & 88)
+
 ditch :: GameState -> String -> GameState
 ditch (GameState world player@(Player _ _ _ inv _) message turns) req = 
 	if (isEmpty player) then 
 		GameState world player "You have nothing to drop!" turns
-	else if (req `elem` (map (name) (contents player))) == False then
+	else if (reqL `elem` (map (toLower.pack.name) (contents player))) == False then
 		GameState world player "You don't have that to drop!" turns
 	else
 	(
@@ -86,8 +87,9 @@ ditch (GameState world player@(Player _ _ _ inv _) message turns) req =
 			(turns+1)
 	)
 	where
+		reqL = toLower (pack req)
 		loc = (worldLocs world)!!(playerLoc player)
-		item = head (filter ((==req).(name)) (contents player))
+		item = head (filter ((==reqL).(toLower.pack.name)) (contents player))
 		locs n = ((take n (worldLocs world))++[(acquire loc item)]++(drop (n+1) (worldLocs world)))
 
 getItems :: World -> [[Item]]

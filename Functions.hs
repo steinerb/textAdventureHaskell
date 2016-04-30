@@ -11,36 +11,26 @@ invalid (GameState world player message turns) = (GameState world player "Not a 
 quit :: GameState -> GameState
 quit (GameState world player message turns) = (GameState world player "quit" turns)
 
+help :: GameState -> GameState
+help (GameState world player message turns) = 
+	(GameState world player
+		(
+			"Commands:\n--------------------------------------------------------------------------------\n"++
+			"(Q)uit: Exit the game\n"++
+			"e(X)amine: Gives a description of your current location and a name of a nearby item\n"++
+			"(C)heck Status: Shows you your player information and how many moves are left\n"++
+			"(I)nventory: Shows you your current items\n"++
+			"(T)ake [ITEM NAME]: Pick up a desired item\n"++
+			"(D)rop [ITEM NAME]: Drop a desired item\n"++
+			"(G)ame: Displays information about the current game state (for developers only)\n"++
+			"Move: Type the first letter of the cardinal direction you want to go (N,E,S,W)\n"++
+			"(H)elp: Display this list of commands\n"++
+			"--------------------------------------------------------------------------------"
+		)
+		turns
+	)
 
-help :: IO ()
-help = do
-	putStrLn ("Commands:\n--------------------------------------------------------------------------------")
-	putStrLn ("(Q)uit: Exit the game")
-	putStrLn ("e(X)amine: Gives a description of your current location and a name of a nearby item")
-	putStrLn ("(C)heck Status: Shows you your player information and how many moves are left")
-	putStrLn ("(I)nventory: Shows you your current items")
-	putStrLn ("(T)ake [ITEM NAME]: Pick up a desired item")
-	putStrLn ("(D)rop [ITEM NAME]: Drop a desired item")
-	putStrLn ("(G)ame: Displays information about the current game state (for developers only)")
-	putStrLn ("Move: Type the first letter of the cardinal direction you want to go (N,E,S,W)")
-	putStrLn ("(H)elp: Display this list of commands")
-	putStrLn ("--------------------------------------------------------------------------------")
-	
 
-{-ORIGINAL EXAMINE/LOOK COMBO
-examine :: GameState -> GameState
-examine (GameState world player message turns) = 
-	if (isEmpty loc)
-		then (GameState (search world) player 
-			("You look around and see "++(desc (loc)) ) turns)
-	else
-		(GameState (search world) player 
-			("You look around and see "++(desc (loc))++"\n\t\tYou notice these items nearby: "++(unwords (map name (contents loc))) ) turns)
-	where
-		loc = (worldLocs world)!!(playerLoc player)
-		search w@(World ls cs) = (World (locs (locID loc)) cs)
-		locs n = ((take n (worldLocs world))++[(Location (locID loc) (name loc) (desc loc) (contents loc) (locEnemy loc) True)]++(drop (n+1) (worldLocs world)))
--}
 examine :: GameState -> GameState
 examine state@(GameState world player message turns) = 
 	if (isEmpty loc) then

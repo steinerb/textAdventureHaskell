@@ -72,7 +72,5 @@ updateState state (Move dr) = do return (move state dr)
 updateState state Status = do 
 	putStrLn (show state)
 	return state
-updateState state Help = do
-	help
-	return state
+updateState state Help = do return (help state)
 updateState state Invalid = do return (invalid state)

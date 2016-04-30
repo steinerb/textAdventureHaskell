@@ -26,6 +26,7 @@ data Dir = North
 
 data Command = Quit
 			 | Examine
+			 | Look
 			 | Check
 			 | Inventory
 			 | Take String
@@ -41,6 +42,7 @@ instance Read Command where
 	readsPrec _ s
 		| map toLower s == "q" = [(Quit, "")]
 		| map toLower s == "x" = [(Examine, "")]
+		| map toLower s == "l" = [(Look, "")]
 		| map toLower s == "c" = [(Check, "")]
 		| map toLower s == "i" = [(Inventory, "")]
 		| take 2 (map toLower s) == "t " = [(Take ((words s)!!1), "")]

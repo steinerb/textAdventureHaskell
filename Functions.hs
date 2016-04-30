@@ -27,6 +27,7 @@ help = do
 	putStrLn ("--------------------------------------------------------------------------------")
 	
 
+{-ORIGINAL EXAMINE/LOOK COMBO
 examine :: GameState -> GameState
 examine (GameState world player message turns) = 
 	if (isEmpty loc)
@@ -39,6 +40,27 @@ examine (GameState world player message turns) =
 		loc = (worldLocs world)!!(playerLoc player)
 		search w@(World ls cs) = (World (locs (locID loc)) cs)
 		locs n = ((take n (worldLocs world))++[(Location (locID loc) (name loc) (desc loc) (contents loc) (locEnemy loc) True)]++(drop (n+1) (worldLocs world)))
+-}
+examine :: GameState -> GameState
+examine state@(GameState world player message turns) = 
+	if (isEmpty loc) then
+		(GameState (search world) player 
+			(directions (getAdjacentLocs state)) turns)
+	else
+		(GameState (search world) player 
+			((directions (getAdjacentLocs state))++"\tYou notice these items nearby: "++(unwords (map name (contents loc))) ) turns)
+	where
+		loc = (worldLocs world)!!(playerLoc player)
+		search w@(World ls cs) = (World (locs (locID loc)) cs)
+		locs n = ((take n (worldLocs world))++[(Location (locID loc) (name loc) (desc loc) (contents loc) (locEnemy loc) True)]++(drop (n+1) (worldLocs world)))
+		directions [] = []
+		directions ((l,d):lds) = "To your "++(show d)++" is a "++(name l)++".\n"++(directions lds)
+
+
+look :: GameState -> GameState
+look state@(GameState world player message turns) = 
+	(GameState world player ("You look around and see a "++(desc loc)) turns) where
+		loc = (worldLocs world)!!(playerLoc player)
 
 
 inventory :: GameState -> GameState

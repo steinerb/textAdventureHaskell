@@ -14,23 +14,23 @@ gameWorld g = World (locations g) connections
 locations :: String -> [Location]
 locations g = if (head g) == 'F' || (head g) == 'f' || (head g) == 'G' || (head g) == 'g' || (head g) == 'W' || (head g) == 'w' then
 			[
-				Location 0 "Home" "Home Desc." [(Item 0 "Note" "Note Desc [FEMALE]")] Nothing False,
-				Location 1 "Forrest" "Forrest Desc." [(Item 1 "Ticket" "Ticket Desc")] (Just (Enemy "Spiders" True)) False,
+				Location 0 "Home" "Home Desc." [(Item 0 "Note" "Note Desc [FEMALE]" (-1))] Nothing False,
+				Location 1 "Forrest" "Forrest Desc." [(Item 1 "Ticket" "Ticket Desc" 1)] (Just (Enemy "Spiders" True)) False,
 				Location 2 "TownStation" "TownStation Desc." [] Nothing False,
 				Location 3 "CityStation" "CityStation Desc." [] Nothing False,
-				Location 4 "Street" "Street Desc." [(Item 2 "Weapon" "Weapon Desc")] (Just (Enemy "Hobo" True)) False,
+				Location 4 "Street" "Street Desc." [(Item 2 "Weapon" "Weapon Desc" (-1))] (Just (Enemy "Hobo" True)) False,
 				Location 5 "Gate" "Gate Desc." [] (Just (Enemy "GateKeeper" True)) False,
-				Location 6 "Monestary" "Monestary Desc." [(Item 3 "WuTangSword" "WuTangSword Desc")] Nothing False
+				Location 6 "Monestary" "Monestary Desc." [(Item 3 "WuTangSword" "WuTangSword Desc" (-1))] Nothing False
 			]
 			else
 			[
-				Location 0 "Home" "Home Desc." [(Item 0 "Note" "Note Desc [MALE]")] Nothing False,
-				Location 1 "Forrest" "Forrest Desc." [(Item 1 "Ticket" "Ticket Desc")] (Just (Enemy "Spiders" True)) False,
+				Location 0 "Home" "Home Desc." [(Item 0 "Note" "Note Desc [MALE]" (-1))] Nothing False,
+				Location 1 "Forrest" "Forrest Desc." [(Item 1 "Ticket" "Ticket Desc" 1)] (Just (Enemy "Spiders" True)) False,
 				Location 2 "TownStation" "TownStation Desc." [] Nothing False,
 				Location 3 "CityStation" "CityStation Desc." [] Nothing False,
-				Location 4 "Street" "Street Desc." [(Item 2 "Weapon" "Weapon Desc")] (Just (Enemy "Hobo" True)) False,
+				Location 4 "Street" "Street Desc." [(Item 2 "Weapon" "Weapon Desc" (-1))] (Just (Enemy "Hobo" True)) False,
 				Location 5 "Gate" "Gate Desc." [] (Just (Enemy "GateKeeper" True)) False,
-				Location 6 "Monestary" "Monestary Desc." [(Item 3 "WuTangSword" "WuTangSword Desc")] Nothing False
+				Location 6 "Monestary" "Monestary Desc." [(Item 3 "WuTangSword" "WuTangSword Desc" (-1))] Nothing False
 			]
 
 connections :: [[Con]]

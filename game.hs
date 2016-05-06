@@ -68,6 +68,7 @@ updateState state Check = do return (checkStatus state)
 updateState state Inventory = do return (inventory state)
 updateState state (Take iName) = do return (pickUp state iName)
 updateState state (Drop iName) = do return (ditch state iName)
+updateState state (Use iName) = do return (use state iName)
 updateState state (Move dr) = do return (move state dr)
 updateState state Status = do 
 	putStrLn (show state)

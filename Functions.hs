@@ -22,6 +22,7 @@ help (GameState world player message turns) =
 			"(I)nventory: Shows you your current items\n"++
 			"(T)ake [ITEM NAME]: Pick up a desired item\n"++
 			"(D)rop [ITEM NAME]: Drop a desired item\n"++
+			"(U)se  [ITEM NAME]: Use a desired item\n"++
 			"(G)ame: Displays information about the current game state (for developers only)\n"++
 			"Move: Type the first letter of the cardinal direction you want to go (N,E,S,W)\n"++
 			"(H)elp: Display this list of commands\n"++
@@ -112,9 +113,26 @@ getItemsByID :: World -> ID -> [Item]
 getItemsByID world id = (getItems world)!!id
 
 
+use :: GameState -> String -> GameState
+use state@(GameState world player message turns) req = 
+	if ((filter ((==reqL).(toLower.pack.name)) (contents player)) == []) then
+		(GameState world player "You do not have that item to use!" turns)
+	else if (name item == "Note") then
+		(GameState world player ("The note reads:\n\t"++(desc item)) turns)
+	else if ((playerLoc player == 2) && (name item == "Ticket")) then
+		(move state North)
+	else
+		(GameState world player "You can't use that here!" turns)
+	where
+		reqL = toLower (pack req)
+		item = head (filter ((==reqL).(toLower.pack.name)) (contents player))
+
+
 move :: GameState -> Dir -> GameState
 move state@(GameState world player message turns) req = 
-	if req `elem` (map (getDir) (getAdjacentLocs state)) then
+	if ((playerLoc player == 2) && (req == North) && not ("Ticket" `elem` (map name (contents player)))) then
+		(GameState world player "what could be used to travel to the next station?" turns)
+	else if req `elem` (map (getDir) (getAdjacentLocs state)) then
 		(GameState 
 			world 
 			(Player 

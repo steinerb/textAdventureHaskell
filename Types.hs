@@ -9,7 +9,7 @@ type Message = String
 
 data World = World {worldLocs :: [Location], worldCons :: [[Con]]} deriving (Show)
 data Location = Location {locID :: ID, locName :: String, locDesc :: String, locItem :: [Item], locEnemy :: Maybe Enemy, searched :: Bool} deriving (Show)
-data Item = Item {itemID :: ID, itemName :: String, itemDesc :: String} deriving (Eq, Show)
+data Item = Item {itemID :: ID, itemName :: String, itemDesc :: String, uses :: Int} deriving (Eq, Show)
 data Enemy = Enemy {enemyName :: String, isAlive :: Bool} deriving (Show)
 
 data Player = Player {playerName :: String, playerGender :: String, playerLoc :: ID, stuff :: [Item], stillAlive :: Bool} deriving (Show)
@@ -31,6 +31,7 @@ data Command = Quit
 			 | Inventory
 			 | Take String
 			 | Drop String
+			 | Use String
 			 | Move Dir
 			 | Status
 			 | Help
@@ -47,6 +48,7 @@ instance Read Command where
 		| map toLower s == "i" = [(Inventory, "")]
 		| take 2 (map toLower s) == "t " = [(Take ((words s)!!1), "")]
 		| take 2 (map toLower s) == "d " = [(Drop ((words s)!!1), "")]
+		| take 2 (map toLower s) == "u " = [(Use ((words s)!!1), "")]
 		| map toLower s == "g" = [(Status, "")]
 		| map toLower s == "h" = [(Help, "")]
 		| map toLower s == "n" = [((Move North), "")]
@@ -65,8 +67,8 @@ instance Desc Location where
 	desc (Location _ _ d _ _ _) = d
 
 instance Desc Item where
-	name (Item _ n _) = n
-	desc (Item _ _ d) = d
+	name (Item _ n _ _) = n
+	desc (Item _ _ d _) = d
 
 instance Desc Player where
 	name (Player n _ _ _ _) = n

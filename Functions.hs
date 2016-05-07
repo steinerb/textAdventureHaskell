@@ -115,13 +115,18 @@ getItemsByID world id = (getItems world)!!id
 
 use :: GameState -> String -> GameState
 use state@(GameState world player message turns) req = 
+	--don't have an item
 	if ((filter ((==reqL).(toLower.pack.name)) (contents player)) == []) then
 		(GameState world player "You do not have that item to use!" turns)
+	--use a Note
 	else if (name item == "Note") then
 		(GameState world player ("The note reads:\n\t"++(desc item)) turns)
+	--use a ticket at townstation
 	else if ((playerLoc player == 2) && (name item == "Ticket")) then
-		--this line not working
-		(move (ditch state req) North)
+		(move state North)
+	--more conditions go here
+
+	--can't use an item in a place
 	else
 		(GameState world player "You can't use that here!" turns)
 	where
@@ -131,9 +136,21 @@ use state@(GameState world player message turns) req =
 
 move :: GameState -> Dir -> GameState
 move state@(GameState world player message turns) req = 
+	--no ticket at townstation
 	if ((playerLoc player == 2) && (req == North) && not ("Ticket" `elem` (map name (contents player)))) then
 		(GameState world player "what could be used to travel to the next station?" turns)
-	--else if ((playerLoc player == 2) && (req == North)) then
+	--ticket at town station
+	else if ((playerLoc player == 2) && (req == North)) then
+		(ditch 
+			(GameState 
+				world
+				(Player (name player) (playerGender player) (locID loc) (contents player) (stillAlive player))
+				("You head for the "++(name loc))
+				(turns+1)
+			)
+			"Ticket"
+		)
+	--regular movement
 	else if req `elem` (map (getDir) (getAdjacentLocs state)) then
 		(GameState 
 			world 
@@ -147,6 +164,7 @@ move state@(GameState world player message turns) req =
 			("You head for the "++(name loc)) 
 			(turns+1)
 		)
+	--can't go there
 	else
 		(GameState world player "You cannot go there!" turns)
 	where loc = (getLoc (head (filter ((==req).getDir) (getAdjacentLocs state))))

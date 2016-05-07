@@ -96,7 +96,7 @@ ditch (GameState world player@(Player _ _ _ inv _) message turns) req =
 		GameState
 			(World (locs (playerLoc player)) (worldCons world))
 			(release player item)
-			("You drop the "++req++".")
+			("You part ways with your "++req++".")
 			(turns+1)
 	)
 	where
@@ -120,7 +120,8 @@ use state@(GameState world player message turns) req =
 	else if (name item == "Note") then
 		(GameState world player ("The note reads:\n\t"++(desc item)) turns)
 	else if ((playerLoc player == 2) && (name item == "Ticket")) then
-		(move state North)
+		--this line not working
+		(move (ditch state req) North)
 	else
 		(GameState world player "You can't use that here!" turns)
 	where
@@ -132,6 +133,7 @@ move :: GameState -> Dir -> GameState
 move state@(GameState world player message turns) req = 
 	if ((playerLoc player == 2) && (req == North) && not ("Ticket" `elem` (map name (contents player)))) then
 		(GameState world player "what could be used to travel to the next station?" turns)
+	--else if ((playerLoc player == 2) && (req == North)) then
 	else if req `elem` (map (getDir) (getAdjacentLocs state)) then
 		(GameState 
 			world 

@@ -36,16 +36,22 @@ getGender = do
 
 
 gameLoop :: GameState -> IO ()
+--game ended early (defeat)
 gameLoop oldState@(Terminated msg) = do
 	putStrLn msg
+--game quit
 gameLoop oldState@(GameState _ _ "quit" _) = do
 	putStrLn "Game stopped."
+--game ended on time (victory)
 gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False)) _):locs) _) _ _ _) = do 
 	putStrLn "You Win!!!"
+--lost a fight
 gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
 	gameLoop (Terminated "You have been killed!")
+--time expired
 gameLoop oldState@(GameState _ _ _ 20) = do
 	gameLoop (Terminated "Time's up!")
+--main loop
 gameLoop oldState = do
 	displayState oldState
 	rawInput <- getLine

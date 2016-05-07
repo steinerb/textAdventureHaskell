@@ -22,7 +22,8 @@ help (GameState world player message turns) =
 			"(I)nventory: Shows you your current items\n"++
 			"(T)ake [ITEM NAME]: Pick up a desired item\n"++
 			"(D)rop [ITEM NAME]: Drop a desired item\n"++
-			"(U)se  [ITEM NAME]: Use a desired item\n"++
+			"(U)se  [ITEM NAME]: Use a desired item\n\t"++
+			"*CAUTION*: using a weapon in the same room as an enemy is an attempt at an attack!\n"++
 			"(G)ame: Displays information about the current game state (for developers only)\n"++
 			"Move: Type the first letter of the cardinal direction you want to go (N,E,S,W)\n"++
 			"(H)elp: Display this list of commands\n"++
@@ -121,7 +122,7 @@ use state@(GameState world player message turns) req =
 	--use a Note
 	else if (name item == "Note") then
 		(GameState world player ("The note reads:\n\t"++(desc item)) turns)
-	--use a ticket at townstation
+	--use a Ticket at townstation
 	else if ((playerLoc player == 2) && (name item == "Ticket")) then
 		(move state North)
 	--more conditions go here

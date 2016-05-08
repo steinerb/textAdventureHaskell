@@ -46,11 +46,12 @@ gameLoop oldState@(GameState _ _ "quit" _) = do
 gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False)) _):locs) _) _ _ _) = do 
 	putStrLn "You Win!!!"
 --lost a fight
-gameLoop oldState@(GameState _ (Player _ _ _ _ False) _ _) = do
+gameLoop oldState@(GameState _ (Player _ _ _ _ False) msg _) = do
+	putStrLn msg
 	gameLoop (Terminated "You have been killed!")
 --time expired
 gameLoop oldState@(GameState _ _ _ 20) = do
-	gameLoop (Terminated "Time's up!")
+	gameLoop (Terminated "Time has expired!")
 --main loop
 gameLoop oldState = do
 	displayState oldState

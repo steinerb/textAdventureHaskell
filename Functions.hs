@@ -125,6 +125,20 @@ use state@(GameState world player message turns) req =
 	--use a Ticket at townstation
 	else if ((playerLoc player == 2) && (name item == "Ticket")) then
 		(move state North)
+	--use any weapon that isn't the sword (a shank) on Pimp at Street
+	else if ( (playerLoc player == 4) && (name item == "Shank") ) then
+		(GameState
+			world
+			(Player 
+				(name player)
+				(playerGender player)
+				(playerLoc player)
+				(contents player)
+				False
+			)
+			("You lunge towards the pimp, who then shoots you on sight.")
+			(turns+1) 
+		)
 	--more conditions go here
 
 	--can't use an item in a place
@@ -145,9 +159,15 @@ move state@(GameState world player message turns) req =
 		(ditch 
 			(GameState 
 				world
-				(Player (name player) (playerGender player) (locID loc) (contents player) (stillAlive player))
+				(Player 
+					(name player)
+					(playerGender player)
+					(locID loc)
+					(contents player)
+					(stillAlive player)
+				)
 				("You head for the "++(name loc))
-				(turns+1)
+				(turns)
 			)
 			"Ticket"
 		)

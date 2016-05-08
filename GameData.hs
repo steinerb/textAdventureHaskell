@@ -18,7 +18,7 @@ locations g = if (head g) == 'F' || (head g) == 'f' || (head g) == 'G' || (head 
 				Location 1 "Forrest" "Forrest Desc." [(Item 1 "Ticket" "Ticket Desc" 1)] (Just (Enemy "Spiders" True)) False,
 				Location 2 "TownStation" "TownStation Desc." [] Nothing False,
 				Location 3 "CityStation" "CityStation Desc." [] Nothing False,
-				Location 4 "Street" "Street Desc." [(Item 2 "Weapon" "Weapon Desc" (-1))] (Just (Enemy "Hobo" True)) False,
+				Location 4 "Street" "Street Desc." [(Item 2 "Shank" "Shank Desc" (-1))] (Just (Enemy "Pimp" True)) False,
 				Location 5 "Gate" "Gate Desc." [] (Just (Enemy "GateKeeper" True)) False,
 				Location 6 "Monestary" "Monestary Desc." [(Item 3 "WuTangSword" "WuTangSword Desc" (-1))] Nothing False
 			]
@@ -28,7 +28,7 @@ locations g = if (head g) == 'F' || (head g) == 'f' || (head g) == 'G' || (head 
 				Location 1 "Forrest" "Forrest Desc." [(Item 1 "Ticket" "Ticket Desc" 1)] (Just (Enemy "Spiders" True)) False,
 				Location 2 "TownStation" "TownStation Desc." [] Nothing False,
 				Location 3 "CityStation" "CityStation Desc." [] Nothing False,
-				Location 4 "Street" "Street Desc." [(Item 2 "Weapon" "Weapon Desc" (-1))] (Just (Enemy "Hobo" True)) False,
+				Location 4 "Street" "Street Desc." [(Item 2 "Shank" "Shank Desc" (-1))] (Just (Enemy "Pimp" True)) False,
 				Location 5 "Gate" "Gate Desc." [] (Just (Enemy "GateKeeper" True)) False,
 				Location 6 "Monestary" "Monestary Desc." [(Item 3 "WuTangSword" "WuTangSword Desc" (-1))] Nothing False
 			]

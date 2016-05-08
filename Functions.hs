@@ -1,5 +1,6 @@
 module Functions where
-import Data.Text (pack, toLower)	
+import Data.Text (pack, toLower)
+import Data.Maybe	
 import Types
 --version0.7
 
@@ -295,6 +296,9 @@ move state@(GameState world player message turns) req =
 			)
 			"Ticket"
 		)
+	--haven't defeated gate keeper at gate
+	else if ((playerLoc player == 5) && (isAlive (fromJust (locEnemy ((worldLocs world)!!(playerLoc player)))))) then
+		(GameState world player "You have yet to defeat the Gate Keeper!" turns)
 	--regular movement
 	else if req `elem` (map (getDir) (getAdjacentLocs state)) then
 		(GameState 

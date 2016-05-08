@@ -51,7 +51,7 @@ examine state@(GameState world player message turns) =
 
 look :: GameState -> GameState
 look state@(GameState world player message turns) = 
-	(GameState world player ("You look around and see a "++(desc loc)) turns) where
+	(GameState world player ("You look around and see "++(desc loc)) turns) where
 		loc = (worldLocs world)!!(playerLoc player)
 
 
@@ -90,6 +90,8 @@ ditch :: GameState -> String -> GameState
 ditch (GameState world player@(Player _ _ _ inv _) message turns) req = 
 	if (isEmpty player) then 
 		GameState world player "You have nothing to drop!" turns
+	else if reqL == (pack "fists") then
+		GameState world player "You cannot drop these!" turns
 	else if (reqL `elem` (map (toLower.pack.name) (contents player))) == False then
 		GameState world player "You don't have that to drop!" turns
 	else
@@ -125,8 +127,8 @@ use state@(GameState world player message turns) req =
 	--use a Ticket at townstation
 	else if ((playerLoc player == 2) && (name item == "Ticket")) then
 		(move state North)
-	--use any weapon that isn't the sword (a shank) on Pimp at Street
-	else if ( (playerLoc player == 4) && (name item == "Shank") ) then
+	--use any weapon that isn't the wuTangSword sword (a RustySword) on enemy at Street
+	else if ((playerLoc player == 4) && ((name item == "RustySword") || (name item == "Fists"))) then
 		(GameState
 			world
 			(Player 
@@ -139,6 +141,8 @@ use state@(GameState world player message turns) req =
 			("You lunge towards the pimp, who then shoots you on sight.")
 			(turns+1) 
 		)
+	--use any weapon that isn't the wuTangSword (a Rusty Sword) on enemy at gate
+	--else if ((playerLoc player == 5) && (name item == "RustySword"))
 	--more conditions go here
 
 	--can't use an item in a place

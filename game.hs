@@ -12,7 +12,7 @@ textAdventure = do
 	intro
 	name <- getName
 	gender <- getGender
-	gameLoop (GameState (gameWorld gender) (Player name gender 0 [] True) "You have 20 moves until it's too late.\nYou wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
+	gameLoop (GameState (gameWorld gender) (Player name gender 0 [(Item 900 "Fists" "Fists Desc" (-1))] True) "You have 20 moves until it's too late.\nYou wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table." 0)
 	--outro
 
 

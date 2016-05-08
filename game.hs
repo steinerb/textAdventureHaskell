@@ -69,6 +69,7 @@ displayState state = do
 
 updateState :: GameState -> Command -> IO GameState
 updateState state Quit = do return (quit state)
+updateState state (Answer ans) = do return (answer state ans)
 updateState state Examine = do return (examine state)
 updateState state Look = do return (look state)
 updateState state Check = do return (checkStatus state)

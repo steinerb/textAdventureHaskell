@@ -7,6 +7,99 @@ import Types
 invalid :: GameState -> GameState
 invalid (GameState world player message turns) = (GameState world player "Not a command. Please try again" turns)
 
+answer :: GameState -> Int -> GameState
+answer state@(GameState world player message turns) req = 
+	--not [in] Trapped
+	if not ((playerLoc player) == 7) then
+		invalid state
+	--wrong answer
+	else if (req == 1) then
+		(GameState
+			world
+			(Player 
+				(name player)
+				(playerGender player)
+				(playerLoc player)
+				(contents player)
+				False
+			)
+			("\"Inspecta Deck!\", you shout.\n The Guard shakes his head before stabbing you with his spear.")
+			(turns+1) 
+		)
+	--correct answer
+	else if (req == 2) then
+		GameState
+			(World
+				(
+					[(worldLocs world)!!0]++
+					[(worldLocs world)!!1]++
+					[(worldLocs world)!!2]++
+					[(worldLocs world)!!3]++
+					[(worldLocs world)!!4]++
+					[(Location
+						(locID gate)
+						(name gate)
+						(desc gate)
+						(contents gate)
+						(Just (Enemy "GateKeeper" False))
+						(searched gate)
+					)]++
+					[(worldLocs world)!!6]++
+					[(Location
+						(locID trapped)
+						(name trapped)
+						(desc trapped)
+						(contents trapped)
+						(Just (Enemy "GateKeeper" False))
+						(searched trapped)
+					)]
+				)
+				(worldCons world)
+			)
+			(Player
+				(name player)
+				(playerGender player)
+				(5)
+				(contents player)
+				(stillAlive player)
+			)
+			("\"Ol' Dirty Bastard!\", you shout.\n The Guard smiles before bursting into flames.")
+			(turns+1)
+	--wrong answer
+	else if (req == 3) then
+		(GameState
+			world
+			(Player 
+				(name player)
+				(playerGender player)
+				(playerLoc player)
+				(contents player)
+				False
+			)
+			("\"RZA!\", you shout.\n The Guard shakes his head before stabbing you with his spear.")
+			(turns+1) 
+		)
+	--wrong answer
+	else if (req == 4) then
+		(GameState
+			world
+			(Player 
+				(name player)
+				(playerGender player)
+				(playerLoc player)
+				(contents player)
+				False
+			)
+			("\"GZA!\", you shout.\n The Guard shakes his head before stabbing you with his spear.")
+			(turns+1) 
+		)
+	--invalid answer
+	else
+		(GameState world player "Not an answer. Please try again" turns)
+	where
+		gate = (worldLocs world)!!5
+		trapped = (worldLocs world)!!7
+		
 
 quit :: GameState -> GameState
 quit (GameState world player message turns) = (GameState world player "quit" turns)
@@ -34,10 +127,25 @@ help (GameState world player message turns) =
 
 --will display the riddle/question when in Trapped
 examine :: GameState -> GameState
-examine state@(GameState world player message turns) = 
-	if (isEmpty loc) then
+examine state@(GameState world player message turns) =
+	--examine when [in] Trapped 
+	if (playerLoc player == 7) then
+		(GameState (search world) player 
+			(
+				"Which member of the Wu Tang Clan is no longer with us?\n"++
+				"------------------------------------------------------------\n"++
+				"\t(1) Inspecta Deck\n"++
+				"\t(2) Ol' Dirty Bastard\n"++
+				"\t(3) RZA\n"++
+				"\t(4) GZA"
+			)
+			turns
+		)
+	--examine an empty location
+	else if (isEmpty loc) then
 		(GameState (search world) player 
 			(directions (getAdjacentLocs state)) turns)
+	--regular examine
 	else
 		(GameState (search world) player 
 			((directions (getAdjacentLocs state))++"\tYou notice these items nearby: "++(unwords (map name (contents loc))) ) turns)

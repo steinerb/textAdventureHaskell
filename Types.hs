@@ -25,6 +25,7 @@ data Dir = North
 			deriving (Show, Eq)
 
 data Command = Quit
+			 | Answer Int
 			 | Examine
 			 | Look
 			 | Check
@@ -42,6 +43,10 @@ data Command = Quit
 instance Read Command where
 	readsPrec _ s
 		| map toLower s == "q" = [(Quit, "")]
+		| s == "1" = [(Answer 1, "")]
+		| s == "2" = [(Answer 2, "")]
+		| s == "3" = [(Answer 3, "")]
+		| s == "4" = [(Answer 4, "")]
 		| map toLower s == "x" = [(Examine, "")]
 		| map toLower s == "l" = [(Look, "")]
 		| map toLower s == "c" = [(Check, "")]

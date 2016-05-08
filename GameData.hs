@@ -33,7 +33,7 @@ locations g = if (head g) == 'F' || (head g) == 'f' || (head g) == 'G' || (head 
 				Location 4 "Street" "an old, rusty sword on the ground. Could it be?" [(Item 2 "RustySword" "RustySword Desc" (-1))] (Just (Enemy "Pimp" True)) False,
 				Location 5 "Gate" "a Gate Desc." [] (Just (Enemy "GateKeeper" True)) False,
 				Location 6 "Monestary" "a Monestary Desc." [(Item 3 "WuTangSword" "WuTangSword Desc" (-1))] Nothing False,
-				Location 7 "Trapped" "nothing but black. You cannot escape" [] (Just (Enemy "GateKeeper" True)) False
+				Location 7 "Trapped" "nothing but black. There is no escape." [] (Just (Enemy "GateKeeper" True)) False
 			]
 
 connections :: [[Con]]

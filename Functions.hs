@@ -32,7 +32,7 @@ help (GameState world player message turns) =
 		turns
 	)
 
-
+--will display the riddle/question when in Trapped
 examine :: GameState -> GameState
 examine state@(GameState world player message turns) = 
 	if (isEmpty loc) then
@@ -142,7 +142,19 @@ use state@(GameState world player message turns) req =
 			(turns+1) 
 		)
 	--use any weapon that isn't the wuTangSword (a Rusty Sword) on enemy at gate
-	--else if ((playerLoc player == 5) && (name item == "RustySword"))
+	else if ((playerLoc player == 5) && ((name item == "RustySword") || (name item == "Fists"))) then
+		(GameState
+			world
+			(Player
+				(name player)
+				(playerGender player)
+				7
+				(contents player)
+				(stillAlive player)
+			)
+			("You strike the Gate Keeper's armor with your "++(name item)++". He then teleports you to another dimension!")
+			(turns+1)
+		)
 	--more conditions go here
 
 	--can't use an item in a place

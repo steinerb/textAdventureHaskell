@@ -117,8 +117,9 @@ help (GameState world player message turns) =
 			"(I)nventory: Shows you your current items\n"++
 			"(T)ake [ITEM NAME]: Pick up a desired item\n"++
 			"(D)rop [ITEM NAME]: Drop a desired item\n"++
-			"(U)se  [ITEM NAME]: Use a desired item\n\t"++
-			"*CAUTION*: using a weapon in the same room as an enemy is an attempt at an attack!\n"++
+			"(U)se  [ITEM NAME]: Use a desired item\n"++
+			"\t*CAUTION*: using a weapon in the same room as an enemy is an attempt at an attack!\n"++
+			"(1, 2, 3, 4): speech options where applicable\n"++
 			"(G)ame: Displays information about the current game state (for developers only)\n"++
 			"Move: Type the first letter of the cardinal direction you want to go (N,E,S,W)\n"++
 			"(H)elp: Display this list of commands\n"++
@@ -232,6 +233,9 @@ use state@(GameState world player message turns) req =
 	--use a Ticket at townstation
 	else if ((playerLoc player == 2) && (name item == "Ticket")) then
 		(move state North)
+	--use money at citystation
+	else if ((playerLoc player == 3) && (name item == "Money")) then
+		(move state South)
 	--use any weapon that isn't the wuTangSword sword (a RustySword) on enemy at Street
 	else if ((playerLoc player == 4) && ((name item == "RustySword") || (name item == "Fists"))) then
 		(GameState
@@ -324,6 +328,9 @@ move state@(GameState world player message turns) req =
 	--haven't defeated gate keeper at gate
 	else if ((playerLoc player == 5) && (isAlive (fromJust (locEnemy ((worldLocs world)!!(playerLoc player)))))) then
 		(GameState world player "You have yet to defeat the Gate Keeper!" turns)
+	--don't have money for a ticket
+	else if ((playerLoc player == 3) && (req == South) && ((filter ((=="Money").name) (contents ((worldLocs world)!!(playerLoc player)))) == [])) then
+		(GameState world player "You need either a Ticket or the Money to pay for one!" turns)
 	--regular movement
 	else if req `elem` (map (getDir) (getAdjacentLocs state)) then
 		(GameState 

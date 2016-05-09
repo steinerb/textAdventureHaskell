@@ -1,4 +1,5 @@
 module Functions where
+import GameData (question)
 import Data.Text (pack, toLower)
 import Data.Maybe	
 import Types
@@ -133,12 +134,7 @@ examine state@(GameState world player message turns) =
 	if (playerLoc player == 7) then
 		(GameState (search world) player 
 			(
-				"Which member of the Wu Tang Clan is no longer with us?\n"++
-				"------------------------------------------------------------\n"++
-				"\t(1) Inspecta Deck\n"++
-				"\t(2) Ol' Dirty Bastard\n"++
-				"\t(3) RZA\n"++
-				"\t(4) GZA"
+				question
 			)
 			turns
 		)
@@ -250,6 +246,35 @@ use state@(GameState world player message turns) req =
 			("You lunge towards the pimp, who then shoots you on sight.")
 			(turns+1) 
 		)
+	--use wuTangSword on Pimp
+	else if ((playerLoc player == 4) && (name item == "WuTangSword")) then
+		GameState
+			(World
+					(
+						[(worldLocs world)!!0]++
+						[(worldLocs world)!!1]++
+						[(worldLocs world)!!2]++
+						[(worldLocs world)!!3]++
+						[(Location
+							(locID ((worldLocs world)!!4))
+							(name ((worldLocs world)!!4))
+							(desc ((worldLocs world)!!4))
+							(
+								(contents ((worldLocs world)!!4))++[(Item 4 "Money" "Money Desc" 1)]
+							)
+							(Just (Enemy "Pimp" False))
+							(searched ((worldLocs world)!!4))
+						)]++
+						[(worldLocs world)!!5]++
+						[(worldLocs world)!!6]++
+						[(worldLocs world)!!7]
+					)
+					(worldCons world)
+				)
+			(player)
+			("You lunge towards the pimp, whose bullets melt from the power of the legendary sword!"++"\n\tAs you strike, a wad of cash falls to the ground.")
+			(turns+1)
+
 	--use any weapon that isn't the wuTangSword (a Rusty Sword) on enemy at gate
 	else if ((playerLoc player == 5) && ((name item == "RustySword") || (name item == "Fists"))) then
 		(GameState
@@ -261,7 +286,7 @@ use state@(GameState world player message turns) req =
 				(contents player)
 				(stillAlive player)
 			)
-			("You strike the Gate Keeper's armor with your "++(name item)++". He then teleports you to another dimension!")
+			("You strike the Gate Keeper's armor with your "++(name item)++". He then teleports you to another dimension!\nThe Gate Keeper looks at you and says: In order to defeat me, you must answer me this:\n"++question)
 			(turns+1)
 		)
 	--more conditions go here

@@ -48,3 +48,12 @@ connections =
 				[0, 0, 0, 0, 0, 3, 0],
 				[0, 0, 0, 0, 0, 0, 0]
 			]
+
+question :: String
+question = 
+	"\tWhich member of the Wu Tang Clan is no longer with us?\n"++
+				"\t------------------------------------------------------------\n"++
+				"\t\t(1) Inspecta Deck\n"++
+				"\t\t(2) Ol' Dirty Bastard\n"++
+				"\t\t(3) RZA\n"++
+				"\t\t(4) GZA"

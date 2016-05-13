@@ -214,6 +214,9 @@ ditch (GameState world player@(Player _ _ _ inv _) message turns) req =
 		item = head (filter ((==reqL).(toLower.pack.name)) (contents player))
 		locs n = ((take n (worldLocs world))++[(acquire loc item)]++(drop (n+1) (worldLocs world)))
 
+--destroy :: GameState -> String -> GameState
+--destroy state req = undefined
+
 getItems :: World -> [[Item]]
 getItems world = map (getItem) (worldLocs world) where
 	getItem loc = locItem loc
@@ -278,8 +281,7 @@ use state@(GameState world player message turns) req =
 			(player)
 			("You lunge towards the pimp, whose bullets melt from the power of the legendary sword!"++"\n\tAs you strike, a wad of cash falls to the ground.")
 			(turns+1)
-
-	--use any weapon that isn't the wuTangSword (a Rusty Sword) on enemy at gate
+	--use any weapon that isn't the wuTangSword (a Rusty Sword) on the Gate Keeper
 	else if ((playerLoc player == 5) && ((name item == "RustySword") || (name item == "Fists"))) then
 		(GameState
 			world
@@ -293,21 +295,49 @@ use state@(GameState world player message turns) req =
 			("You strike the Gate Keeper's armor with your "++(name item)++". He then teleports you to another dimension!\nThe Gate Keeper looks at you and says: In order to defeat me, you must answer me this:\n"++question)
 			(turns+1)
 		)
-	--more conditions go here
-
+	--use wutwangsword on spiders to WIN THE GAME!!!
+	else if ((playerLoc player == 1) && (name item == "WuTangSword")) then
+		GameState
+			(World
+				(
+					[(worldLocs world)!!0]++
+					[(Location
+						(locID place)
+						(name place)
+						(desc place)
+						(contents place)
+						(Just (Enemy "Spiders" False))
+						(searched place)
+					)]++
+					[(worldLocs world)!!2]++
+					[(worldLocs world)!!3]++
+					[(worldLocs world)!!4]++
+					[(worldLocs world)!!5]++
+					[(worldLocs world)!!6]++
+					[(worldLocs world)!!7]
+				)
+				(worldCons world)
+			)
+			player
+			"With a single swing of your sword, you incinerate every spider in the forrest and free your entangled family."
+			(turns+1)
 	--can't use an item in a place
 	else
 		(GameState world player "You can't use that here!" turns)
 	where
 		reqL = toLower (pack req)
 		item = head (filter ((==reqL).(toLower.pack.name)) (contents player))
+		place = ((worldLocs world)!!(playerLoc player))
 
 
 move :: GameState -> Dir -> GameState
 move state@(GameState world player message turns) req = 
 	--no ticket at townstation
 	if ((playerLoc player == 2) && (req == North) && not ("Ticket" `elem` (map name (contents player)))) then
-		(GameState world player "what could be used to travel to the next station?" turns)
+		(GameState world player "What could be used to travel to the next station?" turns)
+	--don't have money for a ticket
+	else if ((playerLoc player == 3) && (req == South) && not ("Money" `elem` (map name (contents player)))) then
+		(GameState world player "You need either a Ticket or the Money to pay for one!" turns)
 	--ticket at town station
 	else if ((playerLoc player == 2) && (req == North)) then
 		(ditch 
@@ -325,12 +355,26 @@ move state@(GameState world player message turns) req =
 			)
 			"Ticket"
 		)
+	--money at city station
+	else if ((playerLoc player == 3) && (req == South)) then
+		(ditch 
+			(GameState 
+				world
+				(Player 
+					(name player)
+					(playerGender player)
+					(locID loc)
+					(contents player)
+					(stillAlive player)
+				)
+				("You head for the "++(name loc))
+				(turns)
+			)
+			"Money"
+		)
 	--haven't defeated gate keeper at gate
 	else if ((playerLoc player == 5) && (isAlive (fromJust (locEnemy ((worldLocs world)!!(playerLoc player)))))) then
 		(GameState world player "You have yet to defeat the Gate Keeper!" turns)
-	--don't have money for a ticket
-	else if ((playerLoc player == 3) && (req == South) && ((filter ((=="Money").name) (contents ((worldLocs world)!!(playerLoc player)))) == [])) then
-		(GameState world player "You need either a Ticket or the Money to pay for one!" turns)
 	--regular movement
 	else if req `elem` (map (getDir) (getAdjacentLocs state)) then
 		(GameState 
@@ -374,6 +418,6 @@ checkStatus :: GameState -> GameState
 checkStatus state@(GameState world player message turns) = 
 	(
 		GameState world player
-		("Player Status:\n-------------------\n"++(desc player)++"\nMoves Remaining: "++(show (20-turns)))
+		("Player Status:\n-------------------\n"++(desc player)++"\nMoves Remaining: "++(show (25-turns)))
 		turns
 	)

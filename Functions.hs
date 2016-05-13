@@ -3,7 +3,7 @@ import GameData (question, maxMoves)
 import Data.Text (pack, toLower)
 import Data.Maybe	
 import Types
---version0.7
+--version0.9
 
 
 invalid :: GameState -> GameState

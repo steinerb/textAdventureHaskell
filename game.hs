@@ -27,17 +27,19 @@ intro = do putStrLn "Welcome!!!"
 
 getName :: IO String
 getName = do
-	putStrLn "Enter your name (in quotation marks):"
+	putStrLn "Enter your name:"
 	rawInput <- getLine
-	name <- return (read rawInput :: String)
+	nInput <- return (read rawInput :: Name)
+	name <- return (getN nInput)
 	putStrLn ("\nHello, "++name++"!")
 	return name
 
 getGender :: IO String
 getGender = do
-	putStrLn "Enter your gender (in quotation marks):"
+	putStrLn "Enter your gender:"
 	rawInput <- getLine
-	gender <- return (read rawInput :: String)
+	gInput <- return (read rawInput :: Gender)
+	gender <- return (getG gInput)
 	return gender
 
 

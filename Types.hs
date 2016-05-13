@@ -18,6 +18,9 @@ data GameState = GameState {theWorld :: World, thePlayer :: Player, message :: M
 			   | Terminated Message
 					deriving (Show)
 
+data Name = Name {getN :: String} deriving (Show, Eq)
+data Gender = Gender {getG :: String} deriving (Show, Eq)		  
+
 data Dir = North
 		 | East
 		 | South
@@ -39,6 +42,16 @@ data Command = Quit
 			 | Invalid
 			 	deriving (Eq, Show)
 
+instance Read Name where
+	readsPrec _ s = [(Name (show s), "")]
+
+instance Read Gender where
+	readsPrec _ s
+		| take 1 (map toLower s) == "m" = [(Gender "Male", "")]
+		| take 1 (map toLower s) == "b" = [(Gender "Male", "")]
+		| take 1 (map toLower s) == "f" = [(Gender "Female", "")]
+		| take 1 (map toLower s) == "w" = [(Gender "Female", "")]
+		| take 1 (map toLower s) == "g" = [(Gender "Female", "")]
 
 instance Read Command where
 	readsPrec _ s

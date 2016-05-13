@@ -214,8 +214,22 @@ ditch (GameState world player@(Player _ _ _ inv _) message turns) req =
 		item = head (filter ((==reqL).(toLower.pack.name)) (contents player))
 		locs n = ((take n (worldLocs world))++[(acquire loc item)]++(drop (n+1) (worldLocs world)))
 
---destroy :: GameState -> String -> GameState
---destroy state req = undefined
+--WARNING: this function will return an error if the player's inventory is empty!
+destroy :: GameState -> String -> GameState
+destroy (GameState world player@(Player _ _ _ inv _) message turns) req = 
+	if (isEmpty player) then 
+		error "destroy called when the player inventory was empty!!!"
+	else
+	(
+		GameState
+			(World (worldLocs world) (worldCons world))
+			(release player item)
+			("You part ways with your "++req++".")
+			(turns+1)
+	)
+	where
+		reqL = toLower (pack req)
+		item = head (filter ((==reqL).(toLower.pack.name)) (contents player))
 
 getItems :: World -> [[Item]]
 getItems world = map (getItem) (worldLocs world) where
@@ -340,7 +354,7 @@ move state@(GameState world player message turns) req =
 		(GameState world player "You need either a Ticket or the Money to pay for one!" turns)
 	--ticket at town station
 	else if ((playerLoc player == 2) && (req == North)) then
-		(ditch 
+		(destroy
 			(GameState 
 				world
 				(Player 
@@ -357,7 +371,7 @@ move state@(GameState world player message turns) req =
 		)
 	--money at city station
 	else if ((playerLoc player == 3) && (req == South)) then
-		(ditch 
+		(destroy 
 			(GameState 
 				world
 				(Player 

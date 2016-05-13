@@ -1,5 +1,5 @@
 module Functions where
-import GameData (question)
+import GameData (question, maxMoves)
 import Data.Text (pack, toLower)
 import Data.Maybe	
 import Types
@@ -418,6 +418,6 @@ checkStatus :: GameState -> GameState
 checkStatus state@(GameState world player message turns) = 
 	(
 		GameState world player
-		("Player Status:\n-------------------\n"++(desc player)++"\nMoves Remaining: "++(show (25-turns)))
+		("Player Status:\n-------------------\n"++(desc player)++"\nMoves Remaining: "++(show ((maxMoves)-turns)))
 		turns
 	)

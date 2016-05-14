@@ -1,6 +1,6 @@
 module Types where
 import Data.Char
---version0.9
+--version1.0
 
 
 type Con = Int

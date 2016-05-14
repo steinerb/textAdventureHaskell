@@ -1,6 +1,6 @@
 module GameData where
 import Types
---version0.9
+--version1.0
 
 maxMoves :: Int
 maxMoves = 25

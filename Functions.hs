@@ -281,7 +281,7 @@ use state@(GameState world player message turns) req =
 							(name ((worldLocs world)!!4))
 							(desc ((worldLocs world)!!4))
 							(
-								(contents ((worldLocs world)!!4))++[(Item 4 "Money" "Money Desc" 1)]
+								(contents ((worldLocs world)!!4))++[(Item 4 "Money" "a wad of bills." 1)]
 							)
 							(Just (Enemy "Pimp" False))
 							(searched ((worldLocs world)!!4))

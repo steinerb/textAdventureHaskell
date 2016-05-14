@@ -19,11 +19,14 @@ textAdventure = do
 			("You have "++(show maxMoves)++" moves until it's too late.\nYou wake up to an unusually quiet household.\nAfter looking around for quite some time, you realize your family is nowhere to be found.\nEverything in the house is exactly as they would have left it, except for a note on the table.") 
 			0
 		)
-	--outro
+	outro
 
 
 intro :: IO ()
-intro = do putStrLn "Welcome!!!"
+intro = do putStrLn "Welcome!\nIn this game, you must enter the rugged lands of Shaolin in order to save your family from a dark force\n for further instructions, press the \"H\" key for a list of possible commands once your character has been created."
+
+outro :: IO ()
+outro = do putStrLn "\n\n\nGame created by Brian Steiner in 2016."
 
 getName :: IO String
 getName = do
@@ -52,7 +55,7 @@ gameLoop oldState@(GameState _ _ "quit" _) = do
 	putStrLn "Game stopped."
 --game ended on time (victory)
 gameLoop oldState@(GameState (World (home:(Location _ _ _ _ (Just (Enemy _ False)) _):locs) _) _ _ _) = do 
-	putStrLn "You Win!!!"
+	putStrLn "With a single swing of your sword, \n\tyou incinerate every spider in the forrest and free your entangled family.\nYOU WIN!!!"
 --lost a fight
 gameLoop oldState@(GameState _ (Player _ _ _ _ False) msg _) = do
 	putStrLn msg
